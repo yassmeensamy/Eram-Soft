@@ -488,7 +488,7 @@ export default function ProjectDetailPage() {
         </h2>
         <div className="pd-divider" />
 
-        <div className="pd-kc-grid">
+        <div className={`pd-kc-grid ${project.features.length > 6 ? "pd-kc-grid--scroll" : ""}`}>
           {project.features.map((feature, i) => (
             <div key={feature.title} className="pd-kc-card">
               <div className="pd-kc-card-glow" />
@@ -527,71 +527,66 @@ export default function ProjectDetailPage() {
       )}
 
       {/* ══════════════════════════════════════
-          Aurora CTA
+          Bottom CTA — Mosaic
          ══════════════════════════════════════ */}
-      <section className="pd-aur pd-reveal">
-        {/* Aurora light bands */}
-        <div className="pd-aur-sky" aria-hidden="true">
-          <div className="pd-aur-band pd-aur-band--1" />
-          <div className="pd-aur-band pd-aur-band--2" />
-          <div className="pd-aur-band pd-aur-band--3" />
-        </div>
-
-        {/* Star field */}
-        <div className="pd-aur-stars" aria-hidden="true">
-          <span style={{ top: "12%", left: "8%" }} />
-          <span style={{ top: "20%", left: "85%" }} />
-          <span style={{ top: "35%", left: "22%" }} />
-          <span style={{ top: "18%", left: "55%" }} />
-          <span style={{ top: "45%", left: "72%" }} />
-          <span style={{ top: "8%", left: "40%" }} />
-          <span style={{ top: "55%", left: "12%" }} />
-          <span style={{ top: "30%", left: "92%" }} />
-          <span style={{ top: "50%", left: "48%" }} />
-          <span style={{ top: "15%", left: "68%" }} />
-        </div>
-
-        {/* Horizon glow */}
-        <div className="pd-aur-horizon" aria-hidden="true" />
-
-        {/* Sweeping light beam */}
-        <div className="pd-aur-beam" aria-hidden="true" />
-
-        {/* Content */}
-        <div className="pd-aur-body">
-          <div className="pd-aur-badge">
-            <span className="pd-aur-badge-dot" />
-            Let&apos;s Talk
+      <div className="pd-bottom pd-reveal">
+        {/* Project images mosaic background */}
+        <div className="pd-bottom-mosaic" aria-hidden="true">
+          <div className="pd-bottom-mosaic-track">
+            {[...projects, ...projects].map((p, i) => (
+              <div key={`${p.slug}-${i}`} className="pd-bottom-mosaic-item">
+                <Image
+                  src={p.image}
+                  alt=""
+                  fill
+                  sizes="200px"
+                  className="pd-bottom-mosaic-img"
+                />
+              </div>
+            ))}
           </div>
-
-          <h2 className="pd-aur-title">
-            Ready to Build Something
-            <br />
-            <span className="pd-aur-title-accent">Exceptional</span>?
-          </h2>
-
-          <p className="pd-aur-desc">
-            Let&apos;s discuss how we can bring your vision to life with
-            precision engineering and world-class design.
-          </p>
-
-          <div className="pd-aur-actions">
-            <Link href="/contact" className="pd-aur-btn pd-aur-btn--primary">
-              <span className="pd-aur-btn-shimmer" aria-hidden="true" />
-              <span className="pd-aur-btn-text">
-                Get a Free Consultation
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="12 5 19 12 12 19" />
-                </svg>
-              </span>
-            </Link>
-            <Link href="/#projects" className="pd-aur-btn pd-aur-btn--outline">
-              See Our Work
-            </Link>
+          <div className="pd-bottom-mosaic-track pd-bottom-mosaic-track--reverse">
+            {[...projects.slice().reverse(), ...projects.slice().reverse()].map((p, i) => (
+              <div key={`${p.slug}-rev-${i}`} className="pd-bottom-mosaic-item">
+                <Image
+                  src={p.image}
+                  alt=""
+                  fill
+                  sizes="200px"
+                  className="pd-bottom-mosaic-img"
+                />
+              </div>
+            ))}
+          </div>
+          <div className="pd-bottom-mosaic-track">
+            {[...projects.slice(2), ...projects, ...projects.slice(0, 2)].map((p, i) => (
+              <div key={`${p.slug}-alt-${i}`} className="pd-bottom-mosaic-item">
+                <Image
+                  src={p.image}
+                  alt=""
+                  fill
+                  sizes="200px"
+                  className="pd-bottom-mosaic-img"
+                />
+              </div>
+            ))}
           </div>
         </div>
-      </section>
+        <div className="pd-bottom-mosaic-overlay" aria-hidden="true" />
+
+        <span className="pd-bottom-border" aria-hidden="true" />
+        <div className="pd-bottom-inner">
+          <h3 className="pd-bottom-heading">Have a project in mind?</h3>
+          <p className="pd-bottom-sub">Let&apos;s craft something exceptional together.</p>
+          <Link href="/contact" className="pd-bottom-btn">
+            <span>Start a Conversation</span>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="3" y1="15" x2="15" y2="3" />
+              <polyline points="7 3 15 3 15 11" />
+            </svg>
+          </Link>
+        </div>
+      </div>
 
     </div>
   );

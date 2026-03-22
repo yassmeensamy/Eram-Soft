@@ -59,6 +59,21 @@
         "icon": "shield",
         "title": "Offline-First Architecture",
         "description": "Core features work without internet, syncing seamlessly when connectivity returns."
+      },
+      {
+        "icon": "user",
+        "title": "Group Coordination",
+        "description": "Real-time location sharing and group messaging to keep travel companions connected in crowded areas."
+      },
+      {
+        "icon": "clock",
+        "title": "Scheduled Reminders",
+        "description": "Custom timed reminders for rituals, hydration, medication, and transportation schedules."
+      },
+      {
+        "icon": "layers",
+        "title": "Dua Library",
+        "description": "Curated collection of supplications for each ritual stage with transliteration and audio playback."
       }
     ],
     "gallery": [

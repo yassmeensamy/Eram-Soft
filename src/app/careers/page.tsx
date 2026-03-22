@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useReveal } from "@/hooks/useReveal";
 import "./careers.css";
 
@@ -69,120 +69,50 @@ const perks = [
 ];
 
 
+const LINE_CLAMP = 6;
+
 const positions = [
   {
     title: "Senior React Developer",
     department: "Engineering",
     location: "Remote / Amman",
     type: "Full-time",
-    description: "We are looking for a Senior React Developer to lead frontend architecture and build scalable, high-performance web applications.",
-    responsibilities: [
-      "Architect and develop complex React applications with TypeScript",
-      "Mentor junior developers and conduct code reviews",
-      "Collaborate with designers and backend engineers to deliver features",
-      "Optimize application performance and ensure best practices",
-    ],
-    requirements: [
-      "5+ years of experience with React and TypeScript",
-      "Strong understanding of state management (Redux, Zustand, or Context)",
-      "Experience with Next.js and server-side rendering",
-      "Excellent problem-solving and communication skills",
-    ],
+    details: "We are looking for a Senior React Developer to lead frontend architecture and build scalable, high-performance web applications. You will architect and develop complex React applications with TypeScript, mentor junior developers and conduct code reviews, collaborate with designers and backend engineers to deliver features, and optimize application performance and ensure best practices. We require 5+ years of experience with React and TypeScript, strong understanding of state management (Redux, Zustand, or Context), experience with Next.js and server-side rendering, and excellent problem-solving and communication skills. In this role, you will also be responsible for establishing coding standards and best practices across the frontend team, leading technical design discussions, evaluating new technologies and frameworks, and contributing to our open-source initiatives. You will work closely with product managers to translate business requirements into technical specifications, participate in sprint planning and estimation, and help shape the product roadmap from a technical perspective. The ideal candidate is passionate about creating exceptional user experiences, stays current with the latest trends in web development, and thrives in a collaborative, fast-paced environment where innovation is encouraged.",
   },
   {
     title: "Backend Engineer (Node.js)",
     department: "Engineering",
     location: "Amman, Jordan",
     type: "Full-time",
-    description: "We are seeking a Backend Engineer to design and build robust APIs and services that power our client applications.",
-    responsibilities: [
-      "Design and implement RESTful and GraphQL APIs",
-      "Build and maintain microservices architecture",
-      "Optimize database queries and ensure data integrity",
-      "Write unit and integration tests for backend services",
-    ],
-    requirements: [
-      "3+ years of experience with Node.js and Express/Fastify",
-      "Proficient in PostgreSQL, MongoDB, or similar databases",
-      "Experience with Docker and CI/CD pipelines",
-      "Understanding of security best practices",
-    ],
+    details: "We are seeking a Backend Engineer to design and build robust APIs and services that power our client applications. You will design and implement RESTful and GraphQL APIs, build and maintain microservices architecture, optimize database queries and ensure data integrity, and write unit and integration tests for backend services. We require 3+ years of experience with Node.js and Express/Fastify, proficiency in PostgreSQL, MongoDB, or similar databases, experience with Docker and CI/CD pipelines, and understanding of security best practices. Additionally, you will be responsible for designing event-driven architectures, implementing message queues with RabbitMQ or Kafka, building real-time features with WebSockets, and creating comprehensive API documentation. You will collaborate with the DevOps team to ensure smooth deployments and contribute to our infrastructure-as-code practices. The role also involves performance profiling and optimization of database queries, implementing caching strategies with Redis, and ensuring our services meet strict SLA requirements for uptime and response times.",
   },
   {
     title: "UI/UX Designer",
     department: "Design",
     location: "Remote",
     type: "Full-time",
-    description: "We are looking for a creative UI/UX Designer to craft intuitive and visually stunning interfaces for web and mobile applications.",
-    responsibilities: [
-      "Create wireframes, prototypes, and high-fidelity designs in Figma",
-      "Conduct user research and usability testing",
-      "Develop and maintain design systems and component libraries",
-      "Collaborate closely with developers to ensure pixel-perfect implementation",
-    ],
-    requirements: [
-      "3+ years of experience in UI/UX design",
-      "Strong portfolio showcasing web and mobile design work",
-      "Proficient in Figma and prototyping tools",
-      "Understanding of accessibility standards and responsive design",
-    ],
+    details: "We are looking for a creative UI/UX Designer to craft intuitive and visually stunning interfaces for web and mobile applications. You will create wireframes, prototypes, and high-fidelity designs in Figma, conduct user research and usability testing, develop and maintain design systems and component libraries, and collaborate closely with developers to ensure pixel-perfect implementation.",
   },
   {
     title: "DevOps Engineer",
     department: "DevOps",
     location: "Amman, Jordan",
     type: "Full-time",
-    description: "We are hiring a DevOps Engineer to build and manage our cloud infrastructure, CI/CD pipelines, and deployment automation.",
-    responsibilities: [
-      "Design and maintain cloud infrastructure on AWS or GCP",
-      "Automate deployment pipelines and monitoring systems",
-      "Implement security policies and incident response procedures",
-      "Optimize system performance and ensure high availability",
-    ],
-    requirements: [
-      "3+ years of experience in DevOps or SRE roles",
-      "Proficient with Docker, Kubernetes, and Terraform",
-      "Experience with AWS or GCP cloud services",
-      "Strong scripting skills in Bash or Python",
-    ],
+    details: "We are hiring a DevOps Engineer to build and manage our cloud infrastructure, CI/CD pipelines, and deployment automation. You will design and maintain cloud infrastructure on AWS or GCP, automate deployment pipelines and monitoring systems, implement security policies and incident response procedures, and optimize system performance and ensure high availability.",
   },
   {
     title: "Mobile Developer (React Native)",
     department: "Engineering",
     location: "Remote / Amman",
     type: "Full-time",
-    description: "We are looking for a Mobile Developer to build cross-platform mobile applications using React Native for our diverse client portfolio.",
-    responsibilities: [
-      "Develop and maintain React Native applications for iOS and Android",
-      "Integrate with REST APIs and third-party SDKs",
-      "Ensure smooth animations and optimal app performance",
-      "Publish and manage apps on the App Store and Google Play",
-    ],
-    requirements: [
-      "3+ years of experience with React Native",
-      "Published apps on App Store or Google Play",
-      "Experience with native modules and platform-specific code",
-      "Familiarity with mobile CI/CD tools like Fastlane or EAS",
-    ],
+    details: "We are looking for a Mobile Developer to build cross-platform mobile applications using React Native for our diverse client portfolio. You will develop and maintain React Native applications for iOS and Android, integrate with REST APIs and third-party SDKs, ensure smooth animations and optimal app performance, and publish and manage apps on the App Store and Google Play.",
   },
   {
     title: "Project Manager",
     department: "Management",
     location: "Amman, Jordan",
     type: "Full-time",
-    description: "We are seeking an experienced Project Manager to lead cross-functional teams and deliver software projects from concept to completion.",
-    responsibilities: [
-      "Manage project timelines, budgets, and resource allocation",
-      "Coordinate between clients, designers, and development teams",
-      "Conduct sprint planning, standups, and retrospectives",
-      "Identify risks and implement mitigation strategies",
-    ],
-    requirements: [
-      "3+ years of experience managing software projects",
-      "Strong knowledge of Agile and Scrum methodologies",
-      "Excellent communication and stakeholder management skills",
-      "Experience with Jira, Asana, or similar project management tools",
-    ],
+    details: "We are seeking an experienced Project Manager to lead cross-functional teams and deliver software projects from concept to completion. You will manage project timelines, budgets, and resource allocation, coordinate between clients, designers, and development teams, conduct sprint planning, standups, and retrospectives, and identify risks and implement mitigation strategies.",
   },
 ];
 
@@ -194,6 +124,27 @@ const positions = [
 export default function CareersPage() {
   const pageRef = useReveal();
   const [expandedJob, setExpandedJob] = useState<string | null>(positions[0]?.title ?? null);
+  const [showMoreJobs, setShowMoreJobs] = useState<Record<string, boolean>>({});
+  const [overflowJobs, setOverflowJobs] = useState<Record<string, boolean>>({});
+  const descRefs = useRef<Record<string, HTMLParagraphElement | null>>({});
+
+  const checkOverflow = useCallback(() => {
+    const lineHeight = 0.9 * 1.7 * 16; // font-size * line-height * base
+    const maxHeight = lineHeight * 5.5;
+    positions.forEach((job) => {
+      const el = descRefs.current[job.title];
+      if (el) {
+        setOverflowJobs((prev) => ({
+          ...prev,
+          [job.title]: el.scrollHeight > maxHeight,
+        }));
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    checkOverflow();
+  }, [expandedJob, checkOverflow]);
 
   return (
     <div ref={pageRef} className="ca-page">
@@ -204,23 +155,6 @@ export default function CareersPage() {
       <div className="ca-grain" aria-hidden="true" />
       <div className="ca-dots" aria-hidden="true" />
 
-      {/* ── Banner ── */}
-      <div className="ca-banner">
-        <Image
-          src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1800&q=80"
-          alt="Eram Soft office"
-          fill
-          className="ca-banner-img"
-          sizes="100vw"
-          priority
-        />
-        <div className="ca-banner-overlay" aria-hidden="true" />
-        <div className="ca-banner-inner" data-reveal="up">
-          <h1 className="ca-banner-title">Eram Soft</h1>
-          <div className="ca-banner-line" aria-hidden="true" />
-          <p className="ca-banner-sub">Careers</p>
-        </div>
-      </div>
 
       {/* ── Main content ── */}
       <div className="ca-wrap">
@@ -327,27 +261,26 @@ export default function CareersPage() {
 
                       <div className={`ca-job-body ${isOpen ? "ca-job-body--open" : ""}`}>
                         <div className="ca-job-body-inner">
-                          <p className="ca-job-description">{job.description}</p>
-
-                          <div className="ca-job-details">
-                            <div className="ca-job-detail-col">
-                              <h4 className="ca-job-detail-heading">Responsibilities</h4>
-                              <ul className="ca-job-detail-list">
-                                {job.responsibilities.map((item) => (
-                                  <li key={item}>{item}</li>
-                                ))}
-                              </ul>
-                            </div>
-                            <div className="ca-job-detail-col">
-                              <h4 className="ca-job-detail-heading">Requirements</h4>
-                              <ul className="ca-job-detail-list">
-                                {job.requirements.map((item) => (
-                                  <li key={item}>{item}</li>
-                                ))}
-                              </ul>
-                            </div>
-                          </div>
-
+                          <p
+                            ref={(el) => { descRefs.current[job.title] = el; }}
+                            className={`ca-job-description ${!showMoreJobs[job.title] && overflowJobs[job.title] ? "ca-job-description--clamped" : ""}`}
+                          >
+                            {job.details}
+                            {overflowJobs[job.title] && (
+                              <button
+                                className="ca-job-show-more"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setShowMoreJobs((prev) => ({
+                                    ...prev,
+                                    [job.title]: !prev[job.title],
+                                  }));
+                                }}
+                              >
+                                {showMoreJobs[job.title] ? "Show Less" : "Show More"}
+                              </button>
+                            )}
+                          </p>
                         </div>
                       </div>
                     </div>

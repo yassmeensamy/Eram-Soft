@@ -29,22 +29,33 @@ export default function ProjectsPage() {
     setVisibleCount(PAGE_SIZE);
   }, [activeFilter]);
 
-  /* Scroll reveal */
+  /* Scroll reveal with stagger on filter change */
   useEffect(() => {
-    const els = document.querySelectorAll(".p5-reveal:not(.p5-visible)");
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            (entry.target as HTMLElement).classList.add("p5-visible");
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.06, rootMargin: "0px 0px -30px 0px" }
-    );
-    els.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
+    let observer: IntersectionObserver | null = null;
+    // Small RAF delay so the browser paints the hidden state first
+    const raf = requestAnimationFrame(() => {
+      const els = document.querySelectorAll(".p5-reveal:not(.p5-visible)");
+      observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              observer?.unobserve(entry.target);
+              const el = entry.target as HTMLElement;
+              const rows = Array.from(el.closest(".p5-rows")?.children ?? []);
+              const idx = rows.indexOf(el);
+              el.style.transitionDelay = idx >= 0 ? `${idx * 0.07}s` : "0s";
+              el.classList.add("p5-visible");
+            }
+          });
+        },
+        { threshold: 0.06, rootMargin: "0px 0px -30px 0px" }
+      );
+      els.forEach((el) => observer!.observe(el));
+    });
+    return () => {
+      cancelAnimationFrame(raf);
+      observer?.disconnect();
+    };
   }, [filtered]);
 
   return (
@@ -131,18 +142,6 @@ export default function ProjectsPage() {
                 <div className="p5-row-top">
                   <span className="p5-chip">{project.category}</span>
                   <span className="p5-chip p5-chip--year">{project.year}</span>
-                  <span className="p5-row-status-pill">
-                    <span
-                      className={`p5-status-dot ${
-                        project.status === "Live"
-                          ? "p5-dot--live"
-                          : project.status === "Beta"
-                          ? "p5-dot--beta"
-                          : "p5-dot--dev"
-                      }`}
-                    />
-                    {project.status}
-                  </span>
                 </div>
 
                 <h2 className="p5-row-title">{project.title}</h2>
@@ -235,10 +234,6 @@ export default function ProjectsPage() {
 
           <span className="p5-bottom-border" aria-hidden="true" />
           <div className="p5-bottom-inner">
-            <span className="p5-bottom-tag">
-              <span className="p5-bottom-tag-dot" />
-              Available for work
-            </span>
             <h3 className="p5-bottom-heading">Have a project in mind?</h3>
             <p className="p5-bottom-sub">Let&apos;s craft something exceptional together.</p>
             <Link href="/contact" className="p5-bottom-btn">

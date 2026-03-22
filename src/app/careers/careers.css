@@ -835,7 +835,7 @@
    ══════════════════════════════════════════════════ */
 
 .ca-positions {
-  padding: 48px 0;
+  padding: 120px 0 48px;
   scroll-margin-top: 100px;
 }
 
@@ -1037,9 +1037,33 @@
   font-size: 0.9rem;
   line-height: 1.7;
   color: var(--text-muted);
-  padding-bottom: 24px;
   border-top: 1px solid rgba(var(--neon-rgb), 0.08);
   padding-top: 20px;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ca-job-description--clamped {
+  -webkit-line-clamp: 6;
+}
+
+.ca-job-show-more {
+  background: none;
+  border: none;
+  color: var(--neon);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 6px;
+  display: inline;
+  transition: opacity 0.3s ease;
+}
+
+.ca-job-show-more:hover {
+  opacity: 0.7;
 }
 
 /* Details — two columns */

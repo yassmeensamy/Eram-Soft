@@ -2536,8 +2536,9 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.75rem;
-  color: rgba(160, 180, 200, 0.5);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: rgba(180, 200, 220, 0.85);
   text-decoration: none;
   transition: color 0.25s ease;
 }
@@ -2550,7 +2551,7 @@
   width: 3px;
   height: 3px;
   border-radius: 50%;
-  background: rgba(160, 180, 200, 0.25);
+  background: rgba(180, 200, 220, 0.5);
 }
 
 /* ══════════════════════════════════════════════════ */

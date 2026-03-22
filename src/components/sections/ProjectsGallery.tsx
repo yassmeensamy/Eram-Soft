@@ -124,27 +124,15 @@ export default function ProjectsGallery() {
                   <span key={t} className="neon-tag">{t}</span>
                 ))}
               </div>
-              <span className="pg-view-details">
-                View Project Details
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="12 5 19 12 12 19" />
-                </svg>
-              </span>
             </div>
+            <span className="pg-view-details">
+              View Project Details
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </span>
 
-            {/* Progress bar */}
-            <div className="pg-panel-progress">
-              <div
-                className={`pg-panel-progress-bar ${!paused ? "pg-panel-progress-bar--animate" : ""}`}
-                key={`progress-${active}-${paused}`}
-                style={{
-                  width: paused
-                    ? `${((active + 1) / FEATURED_COUNT) * 100}%`
-                    : undefined,
-                }}
-              />
-            </div>
 
           </Link>
 

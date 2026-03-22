@@ -104,8 +104,12 @@
 }
 
 .p5-reveal {
-  opacity: 1;
-  transform: translateY(0);
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--delay, 0s);
 }
 
 .p5-reveal.p5-visible {
@@ -774,7 +778,7 @@
   position: relative;
   border-radius: 24px;
   overflow: hidden;
-  padding: 64px 48px;
+  padding: 100px 48px;
   text-align: center;
   background: rgba(8, 12, 24, 0.6);
   border: 1px solid rgba(var(--neon-rgb), 0.08);
@@ -802,12 +806,12 @@
   display: flex;
   gap: 8px;
   flex-shrink: 0;
-  animation: p5-mosaic-scroll 45s linear infinite;
+  animation: p5-mosaic-scroll 90s linear infinite;
   width: max-content;
 }
 
 .p5-bottom-mosaic-track--reverse {
-  animation: p5-mosaic-scroll-reverse 50s linear infinite;
+  animation: p5-mosaic-scroll-reverse 100s linear infinite;
 }
 
 @keyframes p5-mosaic-scroll {
