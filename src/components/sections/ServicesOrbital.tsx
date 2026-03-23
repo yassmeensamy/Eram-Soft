@@ -2,23 +2,32 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import "./services-orbital.css";
-import { services } from "@/data/services";
 import SectionHeader from "@/components/ui/SectionHeader";
 import AmbientEffects from "@/components/ui/AmbientEffects";
+import { urlFor } from "@/sanity/lib/image";
+
+interface ServiceItem {
+  number: string;
+  title: string;
+  description: string;
+  tags: string[];
+  image: any; // Sanity image
+}
 
 const AUTOPLAY_INTERVAL = 3000;
 
-export default function ServicesOrbital() {
-  const [active, setActive] = useState(2);
+export default function ServicesOrbital({ services }: { services: ServiceItem[] }) {
+  const len = services?.length || 0;
+  const [active, setActive] = useState(Math.min(2, Math.max(0, len - 1)));
   const [paused, setPaused] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const goTo = useCallback(
     (index: number) => {
-      const len = services.length;
+      if (len === 0) return;
       setActive(((index % len) + len) % len);
     },
-    []
+    [len]
   );
 
   const prev = useCallback(() => goTo(active - 1), [active, goTo]);
@@ -90,7 +99,7 @@ export default function ServicesOrbital() {
                 >
                   <div
                     className="sf-card-bg"
-                    style={{ backgroundImage: `url(${service.image})` }}
+                    style={{ backgroundImage: service.image ? `url(${urlFor(service.image).width(800).url()})` : undefined }}
                   />
                   <div className="sf-card-overlay" />
                   <div className="sf-card-glow" />

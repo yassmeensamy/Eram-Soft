@@ -4,31 +4,44 @@ import { useState, useEffect, useCallback } from "react";
 import SectionHeader from "@/components/ui/SectionHeader";
 import AmbientEffects from "@/components/ui/AmbientEffects";
 import StarRating from "@/components/ui/StarRating";
-import { testimonials } from "@/data/testimonials";
 import "./testimonials2.css";
 
-export default function Testimonials2() {
+interface TestimonialItem {
+  name: string;
+  role: string;
+  company: string;
+  rating: number;
+  comment: string;
+  avatar: string;
+  color: string;
+}
+
+export default function Testimonials2({ testimonials }: { testimonials: TestimonialItem[] }) {
+  const len = testimonials?.length || 0;
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
   const next = useCallback(() => {
-    setActive((prev) => (prev + 1) % testimonials.length);
-  }, []);
+    if (len === 0) return;
+    setActive((prev) => (prev + 1) % len);
+  }, [len]);
 
   const prev = useCallback(() => {
-    setActive((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-  }, []);
+    if (len === 0) return;
+    setActive((prev) => (prev - 1 + len) % len);
+  }, [len]);
 
   const goTo = useCallback((i: number) => {
     setActive(i);
   }, []);
 
   useEffect(() => {
-    if (paused) return;
+    if (paused || len === 0) return;
     const timer = setInterval(next, 6000);
     return () => clearInterval(timer);
-  }, [paused, next]);
+  }, [paused, next, len]);
 
-  const current = testimonials[active];
+  const current = testimonials?.[active];
+  if (!current) return null;
 
   return (
     <section

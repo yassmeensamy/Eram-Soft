@@ -4,9 +4,20 @@ import { useState, useEffect } from "react";
 import "./hero2.css";
 import Link from "next/link";
 
-const words = ["scalable", "reliable", "innovative", "powerful", "modern"];
+interface HeroData {
+  rotatingWords?: string[];
+  headingPrefix?: string;
+  headingSuffix?: string;
+  bodyText?: string;
+  ctaPrimaryText?: string;
+  ctaPrimaryLink?: string;
+  ctaSecondaryText?: string;
+  ctaSecondaryLink?: string;
+}
 
-export default function Hero2() {
+export default function Hero2({ data }: { data?: HeroData }) {
+  const words = data?.rotatingWords ?? ["scalable", "reliable", "innovative", "powerful", "modern"];
+
   const [index, setIndex] = useState(0);
   const [fade, setFade] = useState(false);
 
@@ -19,7 +30,7 @@ export default function Hero2() {
       }, 500);
     }, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, [words.length]);
 
   return (
     <section className="h2-surface relative flex min-h-screen flex-col overflow-hidden">
@@ -80,36 +91,34 @@ export default function Hero2() {
           </p>
 
           <h1 className="h2-heading mb-6 text-5xl font-bold leading-[1.08] md:text-6xl lg:text-[4.5rem] h2-clipReveal [animation-delay:0.2s]">
-            EramSoft build<br />
+            {data?.headingPrefix ?? "We build"}<br />
             <span className={`h2-shimmer h2-word ${fade ? "h2-word--out" : ""}`}>
               {words[index]}
             </span>{" "}
-            software.
+            {data?.headingSuffix ?? "software."}
           </h1>
 
           <p className="h2-body mb-10 max-w-md text-base leading-relaxed md:text-lg h2-fadeUp [animation-delay:0.35s]">
-            Custom web apps, mobile platforms, and cloud
-            infrastructure — architected for performance
-            and built to grow with your business.
+            {data?.bodyText ?? "Custom web apps, mobile platforms, and cloud infrastructure — architected for performance and built to grow with your business."}
           </p>
 
           <div className="flex items-center gap-4 h2-btnIn [animation-delay:0.45s]">
             <Link
-              href="/contact"
+              href={data?.ctaPrimaryLink ?? "/contact"}
               className="h2-cta-primary inline-flex items-center gap-2.5 rounded-full bg-gradient-to-r from-[#50aaff] to-[#3b8de8] px-8 py-3.5 text-sm font-bold tracking-wide text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M22 2L11 13" />
                 <path d="M22 2L15 22L11 13L2 9L22 2Z" />
               </svg>
-              GET STARTED
+              {data?.ctaPrimaryText ?? "GET STARTED"}
             </Link>
 
             <Link
-              href="/projects"
+              href={data?.ctaSecondaryLink ?? "/projects"}
               className="h2-cta-secondary rounded-full border-2 px-8 py-3.5 text-sm font-bold tracking-wide backdrop-blur-sm transition-all duration-300"
             >
-              OUR WORK
+              {data?.ctaSecondaryText ?? "OUR WORK"}
             </Link>
           </div>
         </div>

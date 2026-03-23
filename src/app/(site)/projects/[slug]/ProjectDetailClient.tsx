@@ -1,11 +1,10 @@
 "use client";
 
-import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { projects } from "@/data/projects";
-import { notFound } from "next/navigation";
+import { urlFor } from "@/sanity/lib/image";
+import type { SanityProject, SanityProjectListItem } from "@/sanity/lib/types";
 import "./project-detail.css";
 
 /* ── Icon component for features ── */
@@ -253,15 +252,13 @@ function getTechLogo(name: string): string {
   return logos[name] || "/tech/qr.svg";
 }
 
-export default function ProjectDetailPage() {
-  const params = useParams();
-  const slug = params.slug as string;
-
-  const projectIndex = projects.findIndex((p) => p.slug === slug);
-  if (projectIndex === -1) return notFound();
-
-  const project = projects[projectIndex];
-
+export default function ProjectDetailClient({
+  project,
+  allProjects,
+}: {
+  project: SanityProject;
+  allProjects: SanityProjectListItem[];
+}) {
   const isMobileApp = !project.category.toLowerCase().includes("platform");
 
   useEffect(() => {
@@ -277,6 +274,8 @@ export default function ProjectDetailPage() {
     return () => obs.disconnect();
   }, []);
 
+  const heroImageUrl = project.image ? urlFor(project.image).width(1400).url() : "/placeholder.jpg";
+
   return (
     <div className="pd-page">
       {/* Ambient glows */}
@@ -288,19 +287,16 @@ export default function ProjectDetailPage() {
       {/* Noise texture */}
       <div className="pd-noise" aria-hidden="true" />
 
-      {/* ══════════════════════════════════════
-          Hero Section
-         ══════════════════════════════════════ */}
+      {/* Hero Section */}
       <section className="pd-hero">
         <div
           className="pd-hero-img"
-          style={{ backgroundImage: `url(${project.image})` }}
+          style={{ backgroundImage: `url(${heroImageUrl})` }}
         />
         <div className="pd-hero-overlay" />
         <div className="pd-hero-scanline" aria-hidden="true" />
 
         <div className="pd-hero-content">
-          {/* Badges removed */}
           <h1 className="pd-hero-title">
             {project.title}
           </h1>
@@ -310,9 +306,7 @@ export default function ProjectDetailPage() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════
-          Quick Stats
-         ══════════════════════════════════════ */}
+      {/* Quick Stats */}
       <div className="pd-stats">
         <div className={`pd-stats-grid ${(project.appStoreUrl || project.googlePlayUrl || project.websiteUrl) ? "pd-stats-grid--with-downloads" : ""}`}>
           <div className="pd-stat">
@@ -385,9 +379,7 @@ export default function ProjectDetailPage() {
         </div>
       </div>
 
-      {/* ══════════════════════════════════════
-          Overview
-         ══════════════════════════════════════ */}
+      {/* Overview */}
       <div className="pd-section">
         <p className="pd-section-label">
           Overview
@@ -415,18 +407,18 @@ export default function ProjectDetailPage() {
 
               <div className="pd-client-item">
                 <div className="pd-client-label">Client</div>
-                <div className="pd-client-value">{project.client.name}</div>
+                <div className="pd-client-value">{project.client?.name ?? "N/A"}</div>
               </div>
 
               <div className="pd-client-item">
                 <div className="pd-client-label">Industry</div>
-                <div className="pd-client-value">{project.client.industry}</div>
+                <div className="pd-client-value">{project.client?.industry ?? "N/A"}</div>
               </div>
 
               <div className="pd-client-item">
                 <div className="pd-client-label">Services</div>
                 <div className="pd-client-services">
-                  {project.client.services.map((s) => (
+                  {(project.client?.services ?? []).map((s) => (
                     <span key={s} className="pd-client-service-tag">{s}</span>
                   ))}
                 </div>
@@ -435,7 +427,7 @@ export default function ProjectDetailPage() {
               <div className="pd-client-item">
                 <div className="pd-client-label">Tech Stack</div>
                 <div className="pd-client-tech">
-                  {project.tech.map((t) => (
+                  {(project.tech ?? []).map((t) => (
                     <span key={t} className="pd-tech-tag">
                       <img src={getTechLogo(t)} alt="" className="pd-tech-tag-logo" />
                       {t}
@@ -448,9 +440,7 @@ export default function ProjectDetailPage() {
         </div>
       </div>
 
-      {/* ══════════════════════════════════════
-          Gallery
-         ══════════════════════════════════════ */}
+      {/* Gallery */}
       <div className="pd-section">
         <p className="pd-section-label">Gallery</p>
         <h2 className="pd-section-title">
@@ -460,14 +450,14 @@ export default function ProjectDetailPage() {
 
         <div className="pd-gallery-wrap">
           <div className="pd-gallery-track">
-            {project.gallery.slice(0, 3).map((img, i) => (
+            {(project.gallery ?? []).slice(0, 3).map((img, i) => (
               <div
                 key={i}
                 className="pd-gallery-item"
               >
                 <div className="pd-device-frame">
                   <img
-                    src={img}
+                    src={img ? urlFor(img).width(800).url() : "/placeholder.jpg"}
                     alt={`${project.title} screenshot ${i + 1}`}
                     className={`pd-gallery-img ${!isMobileApp ? "pd-gallery-img--web" : ""}`}
                   />
@@ -478,9 +468,7 @@ export default function ProjectDetailPage() {
         </div>
       </div>
 
-      {/* ══════════════════════════════════════
-          Key Features
-         ══════════════════════════════════════ */}
+      {/* Key Features */}
       <div className="pd-section">
         <p className="pd-section-label">Features</p>
         <h2 className="pd-section-title">
@@ -488,8 +476,8 @@ export default function ProjectDetailPage() {
         </h2>
         <div className="pd-divider" />
 
-        <div className={`pd-kc-grid ${project.features.length > 6 ? "pd-kc-grid--scroll" : ""}`}>
-          {project.features.map((feature, i) => (
+        <div className={`pd-kc-grid ${(project.features ?? []).length > 6 ? "pd-kc-grid--scroll" : ""}`}>
+          {(project.features ?? []).map((feature, i) => (
             <div key={feature.title} className="pd-kc-card">
               <div className="pd-kc-card-glow" />
               <div className="pd-kc-card-inner">
@@ -508,9 +496,7 @@ export default function ProjectDetailPage() {
         </div>
       </div>
 
-      {/* ══════════════════════════════════════
-          Testimonial
-         ══════════════════════════════════════ */}
+      {/* Testimonial */}
       {project.testimonial && (
         <div className="pd-tst">
           <div className="pd-tst-glyph" aria-hidden="true">&ldquo;</div>
@@ -526,17 +512,15 @@ export default function ProjectDetailPage() {
         </div>
       )}
 
-      {/* ══════════════════════════════════════
-          Bottom CTA — Mosaic
-         ══════════════════════════════════════ */}
+      {/* Bottom CTA — Mosaic */}
       <div className="pd-bottom pd-reveal">
         {/* Project images mosaic background */}
         <div className="pd-bottom-mosaic" aria-hidden="true">
           <div className="pd-bottom-mosaic-track">
-            {[...projects, ...projects].map((p, i) => (
+            {[...allProjects, ...allProjects].map((p, i) => (
               <div key={`${p.slug}-${i}`} className="pd-bottom-mosaic-item">
                 <Image
-                  src={p.image}
+                  src={p.image ? urlFor(p.image).width(200).url() : "/placeholder.jpg"}
                   alt=""
                   fill
                   sizes="200px"
@@ -546,10 +530,10 @@ export default function ProjectDetailPage() {
             ))}
           </div>
           <div className="pd-bottom-mosaic-track pd-bottom-mosaic-track--reverse">
-            {[...projects.slice().reverse(), ...projects.slice().reverse()].map((p, i) => (
+            {[...allProjects.slice().reverse(), ...allProjects.slice().reverse()].map((p, i) => (
               <div key={`${p.slug}-rev-${i}`} className="pd-bottom-mosaic-item">
                 <Image
-                  src={p.image}
+                  src={p.image ? urlFor(p.image).width(200).url() : "/placeholder.jpg"}
                   alt=""
                   fill
                   sizes="200px"
@@ -559,10 +543,10 @@ export default function ProjectDetailPage() {
             ))}
           </div>
           <div className="pd-bottom-mosaic-track">
-            {[...projects.slice(2), ...projects, ...projects.slice(0, 2)].map((p, i) => (
+            {[...allProjects.slice(2), ...allProjects, ...allProjects.slice(0, 2)].map((p, i) => (
               <div key={`${p.slug}-alt-${i}`} className="pd-bottom-mosaic-item">
                 <Image
-                  src={p.image}
+                  src={p.image ? urlFor(p.image).width(200).url() : "/placeholder.jpg"}
                   alt=""
                   fill
                   sizes="200px"

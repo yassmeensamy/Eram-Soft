@@ -5,66 +5,41 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { OfficesGrid } from "@/components/sections/Offices";
 import { useReveal } from "@/hooks/useReveal";
+import { urlFor } from "@/sanity/lib/image";
+import type { SanityAboutPage, SanityOffice, SanityStat, SanityValue } from "@/sanity/lib/types";
 import "./about.css";
 
 /* ══════════════════════════════════════════════
-   DATA
+   ICON MAP — maps Sanity iconKey to SVG
    ══════════════════════════════════════════════ */
 
-const stats = [
-  { value: 50, suffix: "+", label: "Projects Delivered" },
-  { value: 6, suffix: "+", label: "Years Experience" },
-  { value: 30, suffix: "+", label: "Team Members" },
-  { value: 98, suffix: "%", label: "Client Retention" },
-];
-
-const values = [
-  {
-    num: "01",
-    title: "Precision Engineering",
-    desc: "Every line of code is reviewed, tested, and optimized. We don\u2019t ship shortcuts \u2014 we ship craftsmanship.",
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="3" />
-        <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
-      </svg>
-    ),
-  },
-  {
-    num: "02",
-    title: "Transparent Partnership",
-    desc: "No black boxes. Clear communication, honest timelines, and full visibility at every stage of development.",
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-        <circle cx="9" cy="7" r="4" />
-        <path d="M23 21v-2a4 4 0 00-3-3.87" />
-        <path d="M16 3.13a4 4 0 010 7.75" />
-      </svg>
-    ),
-  },
-  {
-    num: "03",
-    title: "Relentless Quality",
-    desc: "From automated testing to security audits, quality isn\u2019t an afterthought \u2014 it\u2019s our foundation.",
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-        <polyline points="9 12 11 14 15 10" />
-      </svg>
-    ),
-  },
-  {
-    num: "04",
-    title: "Forward Thinking",
-    desc: "Scalable architectures, modern tools, and patterns that grow with your business into the future.",
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-      </svg>
-    ),
-  },
-];
+const valueIcons: Record<string, React.ReactNode> = {
+  settings: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
+    </svg>
+  ),
+  users: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M23 21v-2a4 4 0 00-3-3.87" />
+      <path d="M16 3.13a4 4 0 010 7.75" />
+    </svg>
+  ),
+  "shield-check": (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <polyline points="9 12 11 14 15 10" />
+    </svg>
+  ),
+  bolt: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+    </svg>
+  ),
+};
 
 /* ══════════════════════════════════════════════
    HOOKS & COMPONENTS
@@ -100,7 +75,7 @@ function useCounter(end: number, duration = 2000) {
   return { count, ref };
 }
 
-function StatItem({ stat }: { stat: (typeof stats)[0] }) {
+function StatItem({ stat }: { stat: SanityStat }) {
   const { count, ref } = useCounter(stat.value);
   return (
     <div ref={ref} className="ab-stat">
@@ -111,11 +86,23 @@ function StatItem({ stat }: { stat: (typeof stats)[0] }) {
 }
 
 /* ══════════════════════════════════════════════
-   PAGE
+   PAGE CLIENT
    ══════════════════════════════════════════════ */
 
-export default function AboutPage() {
+export default function AboutPageClient({
+  aboutData,
+  offices,
+}: {
+  aboutData: SanityAboutPage;
+  offices: SanityOffice[];
+}) {
   const pageRef = useReveal();
+
+  const stats = aboutData?.stats ?? [];
+  const values = aboutData?.values ?? [];
+  const heroImageUrl = aboutData?.heroImage
+    ? urlFor(aboutData.heroImage).width(1200).quality(80).url()
+    : "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&q=80";
 
   return (
     <div ref={pageRef} className="ab-page">
@@ -152,23 +139,21 @@ export default function AboutPage() {
           <div className="ab-hero-text" data-reveal="left">
             <div className="ab-hero-tag-wrap">
               <span className="ab-hero-tag-line" aria-hidden="true" />
-              <p className="ab-tag">About Eram Soft</p>
+              <p className="ab-tag">{aboutData?.heroTagline ?? "About Eram Soft"}</p>
             </div>
             <h1 className="ab-hero-h1">
               <span className="ab-hero-line ab-hero-line--lead">
-                We Build the
+                {aboutData?.heroTitle ?? "We Build the"}
               </span>
               <span className="ab-hero-line ab-hero-line--hero">
-                <span className="ab-accent">Digital Backbone</span>
+                <span className="ab-accent">{aboutData?.heroAccent ?? "Digital Backbone"}</span>
               </span>
               <span className="ab-hero-line ab-hero-line--lead">
                 of Ambitious Businesses
               </span>
             </h1>
             <p className="ab-hero-sub">
-              Since 2019, turning complex challenges into elegant digital
-              solutions &mdash; from mobile apps and web platforms to cloud
-              infrastructure and AI-powered tools.
+              {aboutData?.heroDescription ?? "Since 2019, turning complex challenges into elegant digital solutions — from mobile apps and web platforms to cloud infrastructure and AI-powered tools."}
             </p>
 
             <div className="ab-hero-divider" aria-hidden="true">
@@ -185,7 +170,7 @@ export default function AboutPage() {
               We&apos;re a team of engineers, designers, and strategists who
               treat every project as our own. Our process is built on honest
               timelines, weekly demos, and iterative feedback &mdash;
-              that&apos;s why 98% of our clients come back.
+              that&apos;s why {aboutData?.clientRetention ?? "98"}% of our clients come back.
             </p>
           </div>
 
@@ -196,7 +181,7 @@ export default function AboutPage() {
               <div className="ab-hero-frame-glow" aria-hidden="true" />
               <div className="ab-hero-frame">
                 <Image
-                  src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&q=80"
+                  src={heroImageUrl}
                   alt="Team working on a project"
                   fill
                   className="ab-hero-img"
@@ -221,13 +206,13 @@ export default function AboutPage() {
               {/* Retention badge — glass */}
               <div className="ab-hero-retention">
                 <div className="ab-hero-retention-pulse" aria-hidden="true" />
-                <span className="ab-hero-retention-val">98%</span>
+                <span className="ab-hero-retention-val">{aboutData?.clientRetention ?? "98"}%</span>
                 <span className="ab-hero-retention-lbl">Client Retention</span>
               </div>
 
               {/* Year badge */}
               <div className="ab-hero-year">
-                <span className="ab-hero-year-val">2019</span>
+                <span className="ab-hero-year-val">{aboutData?.foundedYear ?? "2019"}</span>
                 <span className="ab-hero-year-lbl">Est.</span>
               </div>
             </div>
@@ -284,12 +269,10 @@ export default function AboutPage() {
             <div className="ab-pil-content">
               <span className="ab-pil-tag">Vision</span>
               <h3 className="ab-pil-title">
-                The partner of choice for businesses that refuse to
-                compromise on <span className="ab-accent">quality</span>
+                {aboutData?.visionTitle ?? <>The partner of choice for businesses that refuse to compromise on <span className="ab-accent">quality</span></>}
               </h3>
               <p className="ab-pil-desc">
-                Building software that sets new standards for performance,
-                design, and reliability across the region.
+                {aboutData?.visionText ?? "Building software that sets new standards for performance, design, and reliability across the region."}
               </p>
             </div>
           </div>
@@ -325,13 +308,10 @@ export default function AboutPage() {
             <div className="ab-pil-content">
               <span className="ab-pil-tag">Mission</span>
               <h3 className="ab-pil-title">
-                Delivering end-to-end digital solutions with{" "}
-                <span className="ab-accent">precision</span>
+                {aboutData?.missionTitle ?? <>Delivering end-to-end digital solutions with{" "}<span className="ab-accent">precision</span></>}
               </h3>
               <p className="ab-pil-desc">
-                Transparent collaboration and relentless attention to detail
-                &mdash; empowering our clients to lead in their industries
-                through technology.
+                {aboutData?.missionText ?? "Transparent collaboration and relentless attention to detail — empowering our clients to lead in their industries through technology."}
               </p>
             </div>
           </div>
@@ -362,7 +342,7 @@ export default function AboutPage() {
             {values.map((v, i) => (
               <div key={v.title} className="ab-pr-item" data-reveal="up" style={{ "--delay": `${i * 0.12}s` } as React.CSSProperties}>
                 <div className="ab-pr-circle">
-                  <div className="ab-pr-icon">{v.icon}</div>
+                  <div className="ab-pr-icon">{valueIcons[v.iconKey] ?? valueIcons.settings}</div>
                 </div>
                 <div className="ab-pr-stem" aria-hidden="true" />
                 <div className="ab-pr-dot">
@@ -387,7 +367,7 @@ export default function AboutPage() {
               Find Us <span className="ab-accent">Worldwide</span>
             </h2>
           </div>
-          <OfficesGrid />
+          <OfficesGrid offices={offices} />
         </section>
 
         <div className="ab-thread" aria-hidden="true" />
@@ -411,25 +391,24 @@ export default function AboutPage() {
 
             {/* Left — Text content */}
             <div className="ab-pf-text">
-              <p className="ab-pf-tag">Company Portfolio</p>
+              <p className="ab-pf-tag">{aboutData?.portfolioTag ?? "Company Portfolio"}</p>
 
               <h2 className="ab-pf-title">
-                Explore Our <span className="ab-pf-accent">Work &amp; Expertise</span>
+                {aboutData?.portfolioTitle ?? "Explore Our"}{" "}
+                <span className="ab-pf-accent">{aboutData?.portfolioAccent ?? "Work & Expertise"}</span>
               </h2>
 
               <p className="ab-pf-desc">
-                Download our company portfolio to discover our projects,
-                capabilities, technology stack, and the impact we&apos;ve
-                delivered for clients across industries.
+                {aboutData?.portfolioDescription ?? "Download our company portfolio to discover our projects, capabilities, technology stack, and the impact we've delivered for clients across industries."}
               </p>
 
-              <a href="/Eram-Soft-Portfolio.pdf" download className="ab-pf-btn">
+              <a href={aboutData?.portfolioFile?.url ?? "/Eram-Soft-Portfolio.pdf"} download className="ab-pf-btn">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
                   <polyline points="7 10 12 15 17 10" />
                   <line x1="12" y1="15" x2="12" y2="3" />
                 </svg>
-                <span>Download Portfolio</span>
+                <span>{aboutData?.portfolioButtonText ?? "Download Portfolio"}</span>
               </a>
 
               {/* Legal links */}

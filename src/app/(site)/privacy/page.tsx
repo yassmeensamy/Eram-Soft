@@ -1,5 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { PortableText } from "next-sanity";
+import { sanityFetch } from "@/sanity/lib/fetch";
+import { legalPageQuery } from "@/sanity/lib/queries";
+import type { SanityLegalPage } from "@/sanity/lib/types";
 import "../legal.css";
 
 export const metadata: Metadata = {
@@ -7,7 +11,86 @@ export const metadata: Metadata = {
   description: "How Eram Soft collects, uses, and protects your personal information.",
 };
 
-export default function PrivacyPolicyPage() {
+const portableTextComponents = {
+  block: {
+    h2: ({ children }: { children?: React.ReactNode }) => (
+      <h2 className="legal-heading">{children}</h2>
+    ),
+    h3: ({ children }: { children?: React.ReactNode }) => (
+      <h3 className="legal-subheading">{children}</h3>
+    ),
+    normal: ({ children }: { children?: React.ReactNode }) => (
+      <p className="legal-text">{children}</p>
+    ),
+  },
+  list: {
+    bullet: ({ children }: { children?: React.ReactNode }) => (
+      <ul className="legal-list">{children}</ul>
+    ),
+  },
+  marks: {
+    strong: ({ children }: { children?: React.ReactNode }) => <strong>{children}</strong>,
+    link: ({ value, children }: { value?: { href: string }; children?: React.ReactNode }) => (
+      <a href={value?.href} className="legal-link">{children}</a>
+    ),
+  },
+};
+
+export default async function PrivacyPolicyPage() {
+  const legalPage = await sanityFetch<SanityLegalPage | null>({
+    query: legalPageQuery,
+    params: { pageType: "privacy" },
+    tags: ["legal"],
+  });
+
+  // If Sanity has content, render it with PortableText
+  if (legalPage?.content) {
+    return (
+      <div className="legal-page">
+        <div className="legal-glow legal-glow--1" aria-hidden="true" />
+        <div className="legal-glow legal-glow--2" aria-hidden="true" />
+        <div className="legal-streak" aria-hidden="true" />
+        <div className="legal-noise" aria-hidden="true" />
+        <div className="legal-dots" aria-hidden="true" />
+
+        {/* Hero */}
+        <section className="legal-hero">
+          <div className="legal-hero-inner">
+            <span className="legal-label">Legal</span>
+            <h1 className="legal-title">
+              {legalPage.title ?? <>Privacy <span className="legal-title-accent">Policy</span></>}
+            </h1>
+            <p className="legal-subtitle">
+              {legalPage.subtitle ?? "Your privacy matters. Here's how we handle your data."}
+            </p>
+            <div className="legal-meta">
+              Last updated: {legalPage.lastUpdated ?? "March 1, 2026"}
+            </div>
+          </div>
+        </section>
+
+        <div className="legal-divider" />
+
+        <section className="legal-content">
+          <div className="legal-glass-card">
+            <div className="legal-section">
+              <PortableText value={legalPage.content} components={portableTextComponents} />
+            </div>
+
+            {/* Navigation */}
+            <div className="legal-nav">
+              <Link href="/terms" className="legal-nav-link">
+                <span className="legal-nav-label">Also read</span>
+                <span className="legal-nav-title">Terms of Service &rarr;</span>
+              </Link>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
+  // Fallback: hardcoded content when Sanity data is not available
   return (
     <div className="legal-page">
       <div className="legal-glow legal-glow--1" aria-hidden="true" />

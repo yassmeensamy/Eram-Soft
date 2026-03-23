@@ -4,54 +4,33 @@ import { useState } from "react";
 import { OfficesGrid } from "@/components/sections/Offices";
 import { useReveal } from "@/hooks/useReveal";
 import FaqAccordion from "@/components/ui/FaqAccordion";
+import type { SanityContactPage, SanityOffice, SanityFaqItem } from "@/sanity/lib/types";
 import "./contact.css";
 
-/* ══════════════════════════════════════════════
-   DATA
-   ══════════════════════════════════════════════ */
-
-const services = [
-  "Mobile App Development",
-  "Web Development",
-  "UI/UX Design",
-  "Custom Software",
-  "Cloud Solutions",
-  "Other",
-];
-
-const faqs = [
-  {
-    q: "What services does Eram Soft offer?",
-    a: "We specialize in mobile app development, web development, UI/UX design, custom software solutions, and cloud services. Whether you need a full product build or support with a specific phase, we\u2019ve got you covered.",
-  },
-  {
-    q: "How long does a typical project take?",
-    a: "Timelines vary based on scope and complexity. A simple mobile app may take 6\u201310 weeks, while larger enterprise solutions can span several months. We\u2019ll provide a detailed timeline after our discovery session.",
-  },
-  {
-    q: "Do you work with startups or only enterprises?",
-    a: "We work with both. From early-stage startups looking to build their MVP to established enterprises needing scalable solutions \u2014 our team adapts to your stage and budget.",
-  },
-  {
-    q: "What is your development process?",
-    a: "We follow an agile methodology: discovery & planning, UI/UX design, iterative development sprints, QA testing, deployment, and ongoing support. You\u2019ll have full visibility at every stage.",
-  },
-  {
-    q: "Do you provide post-launch support?",
-    a: "Absolutely. We offer maintenance packages that include bug fixes, performance monitoring, feature updates, and security patches to keep your product running smoothly.",
-  },
-  {
-    q: "How can I request a quote?",
-    a: "Simply fill out the contact form above or email us at info@eramsoft.com with a brief description of your project. We\u2019ll get back to you within 24 hours with next steps.",
-  },
-];
-
-/* ══════════════════════════════════════════════
-   PAGE
-   ══════════════════════════════════════════════ */
-
-export default function ContactPage() {
+export default function ContactPageClient({
+  contactData,
+  offices,
+  faqs,
+}: {
+  contactData: SanityContactPage;
+  offices: SanityOffice[];
+  faqs: SanityFaqItem[];
+}) {
   const pageRef = useReveal();
+
+  const serviceOptions = contactData?.serviceOptions ?? [
+    "Mobile App Development",
+    "Web Development",
+    "UI/UX Design",
+    "Custom Software",
+    "Cloud Solutions",
+    "Other",
+  ];
+
+  const faqItems = (faqs ?? []).map((f) => ({
+    q: f.question,
+    a: f.answer,
+  }));
 
   const [form, setForm] = useState({
     name: "",
@@ -105,13 +84,11 @@ export default function ContactPage() {
               Contact Us
             </p>
             <h1 className="ct-hero-h1">
-              Let&apos;s Build Something{" "}
-              <span className="ct-accent">Great Together</span>
+              {contactData?.heroTitle ?? "Let's Build Something"}{" "}
+              <span className="ct-accent">{contactData?.heroAccent ?? "Great Together"}</span>
             </h1>
             <p className="ct-hero-sub">
-              Have a project in mind? A question about our services? Or just
-              want to say hello? We&apos;d love to hear from you &mdash;
-              let&apos;s start a conversation.
+              {contactData?.heroSubtitle ?? "Have a project in mind? A question about our services? Or just want to say hello? We'd love to hear from you — let's start a conversation."}
             </p>
 
             <div className="ct-hero-divider" aria-hidden="true">
@@ -261,7 +238,7 @@ export default function ContactPage() {
                       <option value="" disabled>
                         Select a service
                       </option>
-                      {services.map((s) => (
+                      {serviceOptions.map((s) => (
                         <option key={s} value={s}>
                           {s}
                         </option>
@@ -332,7 +309,7 @@ export default function ContactPage() {
               Find Us <span className="ct-accent">Worldwide</span>
             </h2>
           </div>
-          <OfficesGrid />
+          <OfficesGrid offices={offices} />
         </section>
 
         <div className="ct-thread" aria-hidden="true" />
@@ -348,7 +325,7 @@ export default function ContactPage() {
             </h2>
           </div>
 
-          <FaqAccordion items={faqs} classPrefix="ct-faq" />
+          <FaqAccordion items={faqItems} classPrefix="ct-faq" />
         </section>
 
 

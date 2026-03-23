@@ -2,14 +2,26 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
-import { projects } from "@/data/projects";
 import AmbientEffects from "@/components/ui/AmbientEffects";
+import { urlFor } from "@/sanity/lib/image";
 import "./projects-gallery.css";
 
-const FEATURED_COUNT = projects.length;
-const featuredProjects = projects;
+interface ProjectItem {
+  title: string;
+  slug: string;
+  category: string;
+  description: string;
+  tech: string[];
+  image: any; // Sanity image
+  year: string;
+  tagline: string;
+}
 
-export default function ProjectsGallery() {
+export default function ProjectsGallery({ projects }: { projects: ProjectItem[] }) {
+  const safeProjects = projects?.length ? projects : [];
+  const FEATURED_COUNT = safeProjects.length;
+  const featuredProjects = safeProjects;
+
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
   const current = featuredProjects[active] ?? featuredProjects[0];
@@ -62,6 +74,8 @@ export default function ProjectsGallery() {
     return () => clearInterval(timer);
   }, [paused, isVisible]);
 
+  if (!current) return null;
+
   return (
     <section ref={sectionRef} className="pg-section dark-section section-top-glow relative py-14 md:py-20">
       <AmbientEffects />
@@ -103,7 +117,7 @@ export default function ProjectsGallery() {
                     ? "pg-panel-slide--active"
                     : ""
                 }`}
-                style={{ backgroundImage: `url(${p.image})` }}
+                style={{ backgroundImage: p.image ? `url(${urlFor(p.image).width(800).url()})` : undefined }}
               />
             ))}
             <div className="pg-panel-overlay" />

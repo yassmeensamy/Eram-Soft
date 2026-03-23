@@ -4,58 +4,38 @@ import Image from "next/image";
 import "./offices.css";
 import SectionHeader from "@/components/ui/SectionHeader";
 import AmbientEffects from "@/components/ui/AmbientEffects";
+import { urlFor } from "@/sanity/lib/image";
 
-const branches = [
-  {
-    city: "Dubai",
-    label: "UAE — Head Office",
-    address: "Business Bay, Dubai, UAE",
-    phone: "+971 54 888 2484",
-    hours: "Sun – Thu: 9 AM – 6 PM",
-    image:
-      "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&q=80",
-    map: "https://www.google.com/maps/search/Business+Bay+Dubai+UAE",
-  },
-  {
-    city: "Riyadh",
-    label: "Saudi Arabia",
-    address: "Al Olaya District, Riyadh, KSA",
-    phone: "+966 55 412 7890",
-    hours: "Sun – Thu: 9 AM – 6 PM",
-    image:
-      "https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?w=800&q=80",
-    map: "https://www.google.com/maps/search/Al+Olaya+District+Riyadh+KSA",
-  },
-  {
-    city: "Cairo",
-    label: "Egypt",
-    address: "Smart Village, 6th of October, Cairo",
-    phone: "+20 10 2345 6789",
-    hours: "Sun – Thu: 10 AM – 7 PM",
-    image:
-      "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=800&q=80",
-    map: "https://www.google.com/maps/search/Smart+Village+6th+of+October+Cairo",
-  },
-];
+interface OfficeItem {
+  city: string;
+  label: string;
+  address: string;
+  phone: string;
+  hours: string;
+  image: any; // Sanity image
+  mapLink: string;
+}
 
-function OfficesGrid() {
+function OfficesGrid({ offices }: { offices: OfficeItem[] }) {
   return (
     <div className="of-grid">
-      {branches.map((b) => (
+      {offices.map((b) => (
         <a
           key={b.city}
-          href={b.map}
+          href={b.mapLink}
           target="_blank"
           rel="noopener noreferrer"
           className="of-card"
         >
-          <Image
-            src={b.image}
-            alt={`${b.city} office`}
-            fill
-            className="of-card-bg"
-            sizes="(max-width:900px) 100vw, 33vw"
-          />
+          {b.image && (
+            <Image
+              src={urlFor(b.image).width(800).url()}
+              alt={`${b.city} office`}
+              fill
+              className="of-card-bg"
+              sizes="(max-width:900px) 100vw, 33vw"
+            />
+          )}
           <div className="of-card-overlay" aria-hidden="true" />
 
           <div className="of-card-content">
@@ -146,7 +126,7 @@ function OfficesGrid() {
 
 export { OfficesGrid };
 
-export default function Offices() {
+export default function Offices({ offices }: { offices: OfficeItem[] }) {
   return (
     <section
       id="offices"
@@ -164,7 +144,7 @@ export default function Offices() {
           />
         </div>
 
-        <OfficesGrid />
+        <OfficesGrid offices={offices} />
       </div>
     </section>
   );

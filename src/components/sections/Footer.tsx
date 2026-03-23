@@ -2,13 +2,14 @@ import "./footer.css";
 import Image from "next/image";
 import Link from "next/link";
 import SocialLinks from "@/components/ui/SocialLinks";
+import type { SanityFooterConfig, SanitySocialLink } from "@/sanity/lib/types";
 
-const footerLinks = {
+const defaultFooterLinks = {
   company: [
     { label: "About Us", href: "/about" },
     { label: "Services", href: "/#services" },
     { label: "Projects", href: "/projects" },
-    { label: "Careers", href: "#" },
+    { label: "Careers", href: "/careers" },
   ],
   services: [
     { label: "Mobile Development", href: "/#services" },
@@ -23,7 +24,19 @@ const footerLinks = {
   ],
 };
 
-export default function Footer() {
+export default function Footer({ data, socialLinks }: { data?: SanityFooterConfig | null; socialLinks?: SanitySocialLink[] }) {
+  const brandDescription =
+    data?.brandDescription ??
+    "We craft exceptional digital experiences \u2014 from mobile apps to scalable platforms \u2014 helping businesses thrive in the digital age.";
+  const columns = data?.columns ?? [
+    { heading: "Company", links: defaultFooterLinks.company },
+    { heading: "Services", links: defaultFooterLinks.services },
+    { heading: "Support", links: defaultFooterLinks.support },
+  ];
+  const copyrightText =
+    data?.copyrightText ??
+    `\u00A9 ${new Date().getFullYear()} Eram Soft. All rights reserved.`;
+
   return (
     <footer className="ft-footer relative overflow-hidden">
       <div className="ft-noise" aria-hidden="true" />
@@ -44,45 +57,27 @@ export default function Footer() {
               />
             </Link>
             <p className="ft-brand-desc">
-              We craft exceptional digital experiences — from mobile apps to
-              scalable platforms — helping businesses thrive in the digital age.
+              {brandDescription}
             </p>
 
             {/* Social links */}
             <div className="ft-socials">
-              <SocialLinks linkClassName="ft-social-link" />
+              <SocialLinks linkClassName="ft-social-link" socialLinks={socialLinks} />
             </div>
           </div>
 
           {/* Link columns */}
           <div className="ft-links-grid">
-            <div className="ft-links-col">
-              <h4 className="ft-links-heading">Company</h4>
-              {footerLinks.company.map((link) => (
-                <Link key={link.label} href={link.href} className="ft-link">
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-
-            <div className="ft-links-col">
-              <h4 className="ft-links-heading">Services</h4>
-              {footerLinks.services.map((link) => (
-                <Link key={link.label} href={link.href} className="ft-link">
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-
-            <div className="ft-links-col">
-              <h4 className="ft-links-heading">Support</h4>
-              {footerLinks.support.map((link) => (
-                <Link key={link.label} href={link.href} className="ft-link">
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-
+            {columns.map((col) => (
+              <div key={col.heading} className="ft-links-col">
+                <h4 className="ft-links-heading">{col.heading}</h4>
+                {(col.links ?? []).map((link) => (
+                  <Link key={link.label} href={link.href} className="ft-link">
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            ))}
           </div>
         </div>
 
@@ -92,7 +87,7 @@ export default function Footer() {
         {/* ── Bottom bar ── */}
         <div className="ft-bottom">
           <p className="ft-copyright">
-            &copy; {new Date().getFullYear()} Eram Soft. All rights reserved.
+            {copyrightText}
           </p>
           <p className="ft-credit">
             Crafted with precision & passion.

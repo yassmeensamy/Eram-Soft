@@ -1,10 +1,16 @@
 "use client";
 
 import "./clients.css";
-import { clients } from "@/data/clients";
 import { logos } from "@/components/icons/ClientLogos";
 import SectionHeader from "@/components/ui/SectionHeader";
 import AmbientEffects from "@/components/ui/AmbientEffects";
+
+interface ClientItem {
+  name: string;
+  icon: string;
+  color: string;
+  type: string;
+}
 
 const THRESHOLD = 8; // ≤ 8 clients → single row, > 8 → two-row marquee
 
@@ -30,7 +36,7 @@ function LogoCard({
   );
 }
 
-export default function Clients() {
+export default function Clients({ clients }: { clients: ClientItem[] }) {
   const isSingle = clients.length <= THRESHOLD;
   const row1 = isSingle ? clients : clients.slice(0, Math.ceil(clients.length / 2));
   const row2 = isSingle ? [] : clients.slice(Math.ceil(clients.length / 2));

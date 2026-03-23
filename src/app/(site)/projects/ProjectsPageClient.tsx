@@ -3,11 +3,16 @@
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { projects } from "@/data/projects";
+import { urlFor } from "@/sanity/lib/image";
+import type { SanityProjectListItem } from "@/sanity/lib/types";
 import "./projects-v5.css";
 import "./projects-hero.css";
 
-export default function ProjectsPage() {
+export default function ProjectsPageClient({
+  projects,
+}: {
+  projects: SanityProjectListItem[];
+}) {
   const [activeFilter, setActiveFilter] = useState("All");
   const PAGE_SIZE = 6;
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
@@ -15,12 +20,12 @@ export default function ProjectsPage() {
   const categories = useMemo(() => {
     const cats = [...new Set(projects.map((p) => p.category))];
     return ["All", ...cats];
-  }, []);
+  }, [projects]);
 
   const filtered = useMemo(() => {
     if (activeFilter === "All") return projects;
     return projects.filter((p) => p.category === activeFilter);
-  }, [activeFilter]);
+  }, [activeFilter, projects]);
 
   const visible = filtered.slice(0, visibleCount);
   const hasMore = visibleCount < filtered.length;
@@ -123,7 +128,7 @@ export default function ProjectsPage() {
               {/* Image side */}
               <div className="p5-row-img-wrap">
                 <Image
-                  src={project.image}
+                  src={project.image ? urlFor(project.image).width(800).url() : "/placeholder.jpg"}
                   alt={project.title}
                   fill
                   sizes="(max-width: 640px) 100vw, 55vw"
@@ -194,7 +199,7 @@ export default function ProjectsPage() {
               {[...projects, ...projects].map((p, i) => (
                 <div key={`${p.slug}-${i}`} className="p5-bottom-mosaic-item">
                   <Image
-                    src={p.image}
+                    src={p.image ? urlFor(p.image).width(200).url() : "/placeholder.jpg"}
                     alt=""
                     fill
                     sizes="200px"
@@ -207,7 +212,7 @@ export default function ProjectsPage() {
               {[...projects.slice().reverse(), ...projects.slice().reverse()].map((p, i) => (
                 <div key={`${p.slug}-rev-${i}`} className="p5-bottom-mosaic-item">
                   <Image
-                    src={p.image}
+                    src={p.image ? urlFor(p.image).width(200).url() : "/placeholder.jpg"}
                     alt=""
                     fill
                     sizes="200px"
@@ -220,7 +225,7 @@ export default function ProjectsPage() {
               {[...projects.slice(2), ...projects, ...projects.slice(0, 2)].map((p, i) => (
                 <div key={`${p.slug}-alt-${i}`} className="p5-bottom-mosaic-item">
                   <Image
-                    src={p.image}
+                    src={p.image ? urlFor(p.image).width(200).url() : "/placeholder.jpg"}
                     alt=""
                     fill
                     sizes="200px"
