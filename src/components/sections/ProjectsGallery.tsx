@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import AmbientEffects from "@/components/ui/AmbientEffects";
 import { urlFor } from "@/sanity/lib/image";
+import type { SanityImage } from "@/sanity/lib/types";
 import "./projects-gallery.css";
 
 interface ProjectItem {
@@ -12,15 +13,13 @@ interface ProjectItem {
   category: string;
   description: string;
   tech: string[];
-  image: any; // Sanity image
+  image: SanityImage;
   year: string;
   tagline: string;
 }
 
 export default function ProjectsGallery({ projects }: { projects: ProjectItem[] }) {
-  const safeProjects = projects?.length ? projects : [];
-  const FEATURED_COUNT = safeProjects.length;
-  const featuredProjects = safeProjects;
+  const featuredProjects = projects?.length ? projects : [];
 
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -69,7 +68,7 @@ export default function ProjectsGallery({ projects }: { projects: ProjectItem[] 
   useEffect(() => {
     if (paused || !isVisible) return;
     const timer = setInterval(() => {
-      setActive((prev) => (prev + 1) % FEATURED_COUNT);
+      setActive((prev) => (prev + 1) % featuredProjects.length);
     }, 5000);
     return () => clearInterval(timer);
   }, [paused, isVisible]);
@@ -111,7 +110,7 @@ export default function ProjectsGallery({ projects }: { projects: ProjectItem[] 
           <Link href={`/projects/${current.slug}`} className="pg-panel" style={{ textDecoration: "none" }}>
             {featuredProjects.map((p, i) => (
               <div
-                key={p.title}
+                key={p.slug}
                 className={`pg-panel-slide ${
                   i === active
                     ? "pg-panel-slide--active"

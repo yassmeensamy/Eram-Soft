@@ -69,15 +69,23 @@ export default function HowWeWork({ steps }: { steps: StepItem[] }) {
           />
         </div>
 
-        <div className="hw-timeline">
+        <div
+          className="hw-timeline"
+          style={{
+            "--hw-progress": activeStep !== null && steps.length > 1
+              ? activeStep / (steps.length - 1)
+              : 0,
+          } as React.CSSProperties}
+        >
           <div className="hw-timeline-line" aria-hidden="true" />
+          <div className={`hw-timeline-progress${activeStep !== null ? " hw-timeline-progress--on" : ""}`} aria-hidden="true" />
 
           {steps.map((step, i) => (
             <div
               key={step.number}
               className={`hw-step hw-step-animate ${
                 activeStep === i ? "hw-step--active" : ""
-              }`}
+              } ${activeStep !== null && i <= activeStep ? "hw-step--reached" : ""}`}
               style={{ animationDelay: `${i * 0.15}s` }}
               onMouseEnter={() => setActiveStep(i)}
               onMouseLeave={() => setActiveStep(null)}

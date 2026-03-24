@@ -87,10 +87,16 @@
 }
 
 html {
-  scroll-behavior: smooth;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
   overscroll-behavior: none;
+}
+
+/* Only apply smooth scroll for in-page anchor navigation, not route changes */
+@media (prefers-reduced-motion: no-preference) {
+  html:has(:target) {
+    scroll-behavior: smooth;
+  }
 }
 
 html::-webkit-scrollbar {
