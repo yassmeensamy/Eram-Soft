@@ -1040,13 +1040,27 @@
   border-top: 1px solid rgba(var(--neon-rgb), 0.08);
   padding-top: 20px;
   margin: 0;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
-.ca-job-description--clamped {
-  -webkit-line-clamp: 6;
+.ca-job-desc-wrap {
+  position: relative;
+}
+
+.ca-job-desc-measure {
+  position: absolute !important;
+  visibility: hidden;
+  pointer-events: none;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: -1;
+  padding-top: 0 !important;
+  border-top: none !important;
+}
+
+.ca-job-desc-anim {
+  overflow: hidden;
+  transition: max-height 0.4s ease;
 }
 
 .ca-job-show-more {

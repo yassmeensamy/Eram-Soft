@@ -5,10 +5,9 @@ import Image from "next/image";
 import { Settings, Users, ShieldCheck, Zap } from "lucide-react";
 import { OfficesGrid } from "@/components/sections/Offices";
 import { useReveal } from "@/hooks/useReveal";
-import { useCounter } from "@/hooks/useCounter";
 import PageAmbient from "@/components/ui/PageAmbient";
 import { urlFor } from "@/sanity/lib/image";
-import type { SanityAboutPage, SanityOffice, SanityStat } from "@/sanity/lib/types";
+import type { SanityAboutPage, SanityOffice } from "@/sanity/lib/types";
 import "./about.css";
 
 /* ── Icon map — maps Sanity iconKey to Lucide component ── */
@@ -19,16 +18,6 @@ const VALUE_ICONS: Record<string, React.ComponentType<{ size?: number }>> = {
   bolt: Zap,
 };
 
-function StatItem({ stat }: { stat: SanityStat }) {
-  const { count, ref } = useCounter(stat.value);
-  return (
-    <div ref={ref} className="ab-stat">
-      <span className="ab-stat-value">{count}{stat.suffix}</span>
-      <span className="ab-stat-label">{stat.label}</span>
-    </div>
-  );
-}
-
 export default function AboutPageClient({
   aboutData,
   offices,
@@ -38,7 +27,6 @@ export default function AboutPageClient({
 }) {
   const pageRef = useReveal();
 
-  const stats = aboutData?.stats ?? [];
   const values = aboutData?.values ?? [];
   const heroImageUrl = aboutData?.heroImage
     ? urlFor(aboutData.heroImage).width(1200).quality(80).url()
@@ -160,13 +148,6 @@ export default function AboutPageClient({
           </div>
         </div>
 
-        {/* Stats bar — premium glass */}
-        <div className="ab-hero-stats-bar" data-reveal="up">
-          <div className="ab-hero-stats-shine" aria-hidden="true" />
-          {stats.map((s) => (
-            <StatItem key={s.label} stat={s} />
-          ))}
-        </div>
       </section>
 
       {/* ── Main content container ── */}

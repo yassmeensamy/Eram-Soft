@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { Home, GraduationCap, Heart, Users, Code, TrendingUp, MapPin, ChevronDown } from "lucide-react";
 import { useReveal } from "@/hooks/useReveal";
 import PageAmbient from "@/components/ui/PageAmbient";
@@ -18,6 +18,123 @@ const PERK_ICONS: Record<string, React.ComponentType<{ size?: number }>> = {
   growth: TrendingUp,
 };
 
+/* ── Truncated description with smart 4-line + 5-word cutoff ── */
+function TruncatedDescription({ text }: { text: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const [truncated, setTruncated] = useState<string | null>(null);
+  const measureRef = useRef<HTMLParagraphElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLParagraphElement>(null);
+  const didMount = useRef(false);
+
+  const computeRef = useRef<() => void>(() => {});
+
+  computeRef.current = () => {
+    const el = measureRef.current;
+    if (!el || !el.offsetParent) return;
+
+    const lineHeight = parseFloat(getComputedStyle(el).lineHeight);
+    const fourLines = lineHeight * 4 + 1;
+
+    el.textContent = text;
+    if (el.scrollHeight <= fourLines) {
+      setTruncated(null);
+      return;
+    }
+
+    const words = text.split(/\s+/);
+    let lo = 1;
+    let hi = words.length;
+
+    while (lo < hi) {
+      const mid = Math.ceil((lo + hi) / 2);
+      el.textContent = words.slice(0, mid).join(" ");
+      if (el.scrollHeight > fourLines) {
+        hi = mid - 1;
+      } else {
+        lo = mid;
+      }
+    }
+
+    const end = Math.min(lo + 5, words.length);
+    setTruncated(end >= words.length ? null : words.slice(0, end).join(" "));
+  };
+
+  useLayoutEffect(() => {
+    computeRef.current();
+  }, [text]);
+
+  useEffect(() => {
+    const el = measureRef.current;
+    if (!el?.parentElement) return;
+    const ro = new ResizeObserver(() => computeRef.current());
+    ro.observe(el.parentElement);
+    return () => ro.disconnect();
+  }, []);
+
+  useLayoutEffect(() => {
+    const wrap = wrapRef.current;
+    const inner = innerRef.current;
+    if (!wrap || !inner) return;
+    const h = inner.scrollHeight;
+    if (!didMount.current) {
+      wrap.style.transition = "none";
+      wrap.style.maxHeight = `${h}px`;
+      void wrap.offsetHeight;
+      wrap.style.transition = "";
+      didMount.current = true;
+    } else {
+      wrap.style.maxHeight = `${h}px`;
+    }
+  }, [expanded, truncated]);
+
+  const needsToggle = truncated !== null;
+  const displayText = expanded || !needsToggle ? text : truncated;
+
+  return (
+    <div className="ca-job-desc-wrap">
+      <p
+        ref={measureRef}
+        className="ca-job-description ca-job-desc-measure"
+        aria-hidden="true"
+      />
+      <div ref={wrapRef} className="ca-job-desc-anim">
+        <p ref={innerRef} className="ca-job-description">
+          {displayText}
+          {needsToggle && !expanded && (
+            <>
+              {"… "}
+              <button
+                className="ca-job-show-more"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setExpanded(true);
+                }}
+              >
+                Show More
+              </button>
+            </>
+          )}
+          {needsToggle && expanded && (
+            <>
+              {" "}
+              <button
+                className="ca-job-show-more"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setExpanded(false);
+                }}
+              >
+                Show Less
+              </button>
+            </>
+          )}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function CareersPageClient({
   careersData,
 }: {
@@ -28,27 +145,6 @@ export default function CareersPageClient({
   const positions = careersData?.positions ?? [];
 
   const [expandedJob, setExpandedJob] = useState<string | null>(positions[0]?.title ?? null);
-  const [showMoreJobs, setShowMoreJobs] = useState<Record<string, boolean>>({});
-  const [overflowJobs, setOverflowJobs] = useState<Record<string, boolean>>({});
-  const descRefs = useRef<Record<string, HTMLParagraphElement | null>>({});
-
-  const checkOverflow = useCallback(() => {
-    const lineHeight = 0.9 * 1.7 * 16; // font-size * line-height * base
-    const maxHeight = lineHeight * 5.5;
-    positions.forEach((job) => {
-      const el = descRefs.current[job.title];
-      if (el) {
-        setOverflowJobs((prev) => ({
-          ...prev,
-          [job.title]: el.scrollHeight > maxHeight,
-        }));
-      }
-    });
-  }, [positions]);
-
-  useEffect(() => {
-    checkOverflow();
-  }, [expandedJob, checkOverflow]);
 
   return (
     <div ref={pageRef} className="ca-page">
@@ -154,28 +250,11 @@ export default function CareersPageClient({
                       </button>
 
                       <div className={`ca-job-body ${isOpen ? "ca-job-body--open" : ""}`}>
-                        <div className="ca-job-body-inner">
-                          <p
-                            ref={(el) => { descRefs.current[job.title] = el; }}
-                            className={`ca-job-description ${!showMoreJobs[job.title] && overflowJobs[job.title] ? "ca-job-description--clamped" : ""}`}
-                          >
-                            {job.details}
-                            {overflowJobs[job.title] && (
-                              <button
-                                className="ca-job-show-more"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setShowMoreJobs((prev) => ({
-                                    ...prev,
-                                    [job.title]: !prev[job.title],
-                                  }));
-                                }}
-                              >
-                                {showMoreJobs[job.title] ? "Show Less" : "Show More"}
-                              </button>
-                            )}
-                          </p>
-                        </div>
+                        {isOpen && (
+                          <div className="ca-job-body-inner">
+                            <TruncatedDescription text={job.details} />
+                          </div>
+                        )}
                       </div>
                     </div>
                   );
