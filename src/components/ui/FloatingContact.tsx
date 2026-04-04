@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { CONTACT } from "@/lib/constants";
 import "./floating-contact.css";
 
 const menuVariants = {
@@ -88,7 +89,7 @@ export default function FloatingContact() {
           >
             {/* WhatsApp */}
             <motion.a
-              href="https://wa.me/971548882484"
+              href={CONTACT.whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="fc-option fc-option--whatsapp"
@@ -116,7 +117,7 @@ export default function FloatingContact() {
 
             {/* Email */}
             <motion.a
-              href="mailto:info@eramsoft.com"
+              href={`mailto:${CONTACT.email}`}
               className="fc-option fc-option--email"
               role="menuitem"
               variants={itemVariants}
@@ -139,7 +140,7 @@ export default function FloatingContact() {
               </span>
               <span className="fc-option-label">
                 <span className="fc-option-title">Email</span>
-                <span className="fc-option-subtitle">info@eramsoft.com</span>
+                <span className="fc-option-subtitle">{CONTACT.email}</span>
               </span>
             </motion.a>
 

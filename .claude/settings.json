@@ -2,7 +2,15 @@
   "permissions": {
     "allow": [
       "Bash(npm run:*)",
-      "Bash(python3 -c \":*)"
+      "Bash(python3 -c \":*)",
+      "Bash(npm install:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx eslint:*)",
+      "Bash(git stash:*)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
+      "Bash(ls -la /Users/yassmeen/Desktop/software/src/app/\\\\\\(site\\\\\\)/)",
+      "Bash(find /Users/yassmeen/Desktop/software/src -type f -name *.css -path *layout* -o -name *.css -path *nav*)",
+      "Bash(ls -la eslint* .eslint*)"
     ]
   }
 }

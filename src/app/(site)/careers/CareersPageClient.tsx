@@ -1,52 +1,139 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
+import { Home, GraduationCap, Heart, Users, Code, TrendingUp, MapPin, ChevronDown } from "lucide-react";
 import { useReveal } from "@/hooks/useReveal";
-import type { SanityCareersPage, SanityPerk, SanityJobPosition } from "@/sanity/lib/types";
+import PageAmbient from "@/components/ui/PageAmbient";
+import { CONTACT } from "@/lib/constants";
+import type { SanityCareersPage } from "@/sanity/lib/types";
 import "./careers.css";
 
-/* ══════════════════════════════════════════════
-   ICON MAP — maps Sanity iconKey to SVG
-   ══════════════════════════════════════════════ */
-
-const perkIcons: Record<string, React.ReactNode> = {
-  home: (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1h-2z" />
-    </svg>
-  ),
-  education: (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 14l9-5-9-5-9 5 9 5z" />
-      <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-      <path d="M12 14l9-5-9-5-9 5 9 5zM12 14v7" />
-    </svg>
-  ),
-  heart: (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-    </svg>
-  ),
-  team: (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-    </svg>
-  ),
-  code: (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-    </svg>
-  ),
-  growth: (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-    </svg>
-  ),
+/* ── Icon map — maps Sanity iconKey to Lucide component ── */
+const PERK_ICONS: Record<string, React.ComponentType<{ size?: number }>> = {
+  home: Home,
+  education: GraduationCap,
+  heart: Heart,
+  team: Users,
+  code: Code,
+  growth: TrendingUp,
 };
 
-/* ══════════════════════════════════════════════
-   PAGE CLIENT
-   ══════════════════════════════════════════════ */
+/* ── Truncated description with smart 4-line + 5-word cutoff ── */
+function TruncatedDescription({ text }: { text: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const [truncated, setTruncated] = useState<string | null>(null);
+  const measureRef = useRef<HTMLParagraphElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLParagraphElement>(null);
+  const didMount = useRef(false);
+
+  const computeRef = useRef<() => void>(() => {});
+
+  computeRef.current = () => {
+    const el = measureRef.current;
+    if (!el || !el.offsetParent) return;
+
+    const lineHeight = parseFloat(getComputedStyle(el).lineHeight);
+    const fourLines = lineHeight * 4 + 1;
+
+    el.textContent = text;
+    if (el.scrollHeight <= fourLines) {
+      setTruncated(null);
+      return;
+    }
+
+    const words = text.split(/\s+/);
+    let lo = 1;
+    let hi = words.length;
+
+    while (lo < hi) {
+      const mid = Math.ceil((lo + hi) / 2);
+      el.textContent = words.slice(0, mid).join(" ");
+      if (el.scrollHeight > fourLines) {
+        hi = mid - 1;
+      } else {
+        lo = mid;
+      }
+    }
+
+    const end = Math.min(lo + 5, words.length);
+    setTruncated(end >= words.length ? null : words.slice(0, end).join(" "));
+  };
+
+  useLayoutEffect(() => {
+    computeRef.current();
+  }, [text]);
+
+  useEffect(() => {
+    const el = measureRef.current;
+    if (!el?.parentElement) return;
+    const ro = new ResizeObserver(() => computeRef.current());
+    ro.observe(el.parentElement);
+    return () => ro.disconnect();
+  }, []);
+
+  useLayoutEffect(() => {
+    const wrap = wrapRef.current;
+    const inner = innerRef.current;
+    if (!wrap || !inner) return;
+    const h = inner.scrollHeight;
+    if (!didMount.current) {
+      wrap.style.transition = "none";
+      wrap.style.maxHeight = `${h}px`;
+      void wrap.offsetHeight;
+      wrap.style.transition = "";
+      didMount.current = true;
+    } else {
+      wrap.style.maxHeight = `${h}px`;
+    }
+  }, [expanded, truncated]);
+
+  const needsToggle = truncated !== null;
+  const displayText = expanded || !needsToggle ? text : truncated;
+
+  return (
+    <div className="ca-job-desc-wrap">
+      <p
+        ref={measureRef}
+        className="ca-job-description ca-job-desc-measure"
+        aria-hidden="true"
+      />
+      <div ref={wrapRef} className="ca-job-desc-anim">
+        <p ref={innerRef} className="ca-job-description">
+          {displayText}
+          {needsToggle && !expanded && (
+            <>
+              {"… "}
+              <button
+                className="ca-job-show-more"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setExpanded(true);
+                }}
+              >
+                Show More
+              </button>
+            </>
+          )}
+          {needsToggle && expanded && (
+            <>
+              {" "}
+              <button
+                className="ca-job-show-more"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setExpanded(false);
+                }}
+              >
+                Show Less
+              </button>
+            </>
+          )}
+        </p>
+      </div>
+    </div>
+  );
+}
 
 export default function CareersPageClient({
   careersData,
@@ -58,36 +145,10 @@ export default function CareersPageClient({
   const positions = careersData?.positions ?? [];
 
   const [expandedJob, setExpandedJob] = useState<string | null>(positions[0]?.title ?? null);
-  const [showMoreJobs, setShowMoreJobs] = useState<Record<string, boolean>>({});
-  const [overflowJobs, setOverflowJobs] = useState<Record<string, boolean>>({});
-  const descRefs = useRef<Record<string, HTMLParagraphElement | null>>({});
-
-  const checkOverflow = useCallback(() => {
-    const lineHeight = 0.9 * 1.7 * 16; // font-size * line-height * base
-    const maxHeight = lineHeight * 5.5;
-    positions.forEach((job) => {
-      const el = descRefs.current[job.title];
-      if (el) {
-        setOverflowJobs((prev) => ({
-          ...prev,
-          [job.title]: el.scrollHeight > maxHeight,
-        }));
-      }
-    });
-  }, [positions]);
-
-  useEffect(() => {
-    checkOverflow();
-  }, [expandedJob, checkOverflow]);
 
   return (
     <div ref={pageRef} className="ca-page">
-      {/* ── Ambient layers ── */}
-      <div className="ca-glow ca-glow--a" aria-hidden="true" />
-      <div className="ca-glow ca-glow--b" aria-hidden="true" />
-      <div className="ca-glow ca-glow--c" aria-hidden="true" />
-      <div className="ca-grain" aria-hidden="true" />
-      <div className="ca-dots" aria-hidden="true" />
+      <PageAmbient prefix="ca" />
 
 
       {/* ── Main content ── */}
@@ -166,10 +227,7 @@ export default function CareersPageClient({
                             <span className="ca-job-dept">{job.department}</span>
                             <span className="ca-job-dot" aria-hidden="true" />
                             <span className="ca-job-location">
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                              </svg>
+                              <MapPin size={14} />
                               {job.location}
                             </span>
                             <span className="ca-job-dot" aria-hidden="true" />
@@ -178,7 +236,7 @@ export default function CareersPageClient({
                         </div>
                         <div className="ca-job-right">
                           <a
-                            href={`mailto:careers@eramsoft.com?subject=Application: ${job.title}`}
+                            href={`mailto:${CONTACT.careersEmail}?subject=Application: ${job.title}`}
                             className="ca-job-apply"
                             onClick={(e) => e.stopPropagation()}
                           >
@@ -186,36 +244,17 @@ export default function CareersPageClient({
                             Apply Now
                           </a>
                           <span className={`ca-job-chevron ${isOpen ? "ca-job-chevron--open" : ""}`}>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <polyline points="6 9 12 15 18 9" />
-                            </svg>
+                            <ChevronDown size={20} />
                           </span>
                         </div>
                       </button>
 
                       <div className={`ca-job-body ${isOpen ? "ca-job-body--open" : ""}`}>
-                        <div className="ca-job-body-inner">
-                          <p
-                            ref={(el) => { descRefs.current[job.title] = el; }}
-                            className={`ca-job-description ${!showMoreJobs[job.title] && overflowJobs[job.title] ? "ca-job-description--clamped" : ""}`}
-                          >
-                            {job.details}
-                            {overflowJobs[job.title] && (
-                              <button
-                                className="ca-job-show-more"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setShowMoreJobs((prev) => ({
-                                    ...prev,
-                                    [job.title]: !prev[job.title],
-                                  }));
-                                }}
-                              >
-                                {showMoreJobs[job.title] ? "Show Less" : "Show More"}
-                              </button>
-                            )}
-                          </p>
-                        </div>
+                        {isOpen && (
+                          <div className="ca-job-body-inner">
+                            <TruncatedDescription text={job.details} />
+                          </div>
+                        )}
                       </div>
                     </div>
                   );
@@ -246,7 +285,7 @@ export default function CareersPageClient({
                 data-reveal="up"
                 style={{ "--delay": `${i * 0.06}s` } as React.CSSProperties}
               >
-                <div className="ca-why-card-icon">{perkIcons[perk.iconKey] ?? perkIcons.code}</div>
+                <div className="ca-why-card-icon">{(() => { const Icon = PERK_ICONS[perk.iconKey] ?? Code; return <Icon size={24} />; })()}</div>
                 <h3 className="ca-why-card-title">{perk.title}</h3>
                 <p className="ca-why-card-desc">{perk.desc}</p>
               </div>

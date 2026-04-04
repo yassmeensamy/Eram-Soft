@@ -23,16 +23,6 @@ export interface SanityProjectFeature {
   description: string;
 }
 
-export interface SanityProcessStep {
-  phase: string;
-  description: string;
-}
-
-export interface SanityResultMetric {
-  metric: string;
-  label: string;
-}
-
 export interface SanityProjectTestimonial {
   quote: string;
   author: string;
@@ -68,8 +58,6 @@ export interface SanityProject extends SanityProjectListItem {
   client: SanityClientInfo;
   features: SanityProjectFeature[];
   gallery: SanityImage[];
-  process: SanityProcessStep[];
-  results: SanityResultMetric[];
   testimonial?: SanityProjectTestimonial;
   appStoreUrl?: string;
   googlePlayUrl?: string;
@@ -166,7 +154,6 @@ export interface SanityAboutPage {
   visionText: string;
   missionTitle: string;
   missionText: string;
-  teamImage: SanityImage;
   foundedYear: string;
   clientRetention: string;
   portfolioTag: string;

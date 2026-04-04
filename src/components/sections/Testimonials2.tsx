@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import SectionHeader from "@/components/ui/SectionHeader";
 import AmbientEffects from "@/components/ui/AmbientEffects";
 import StarRating from "@/components/ui/StarRating";
@@ -20,6 +20,9 @@ export default function Testimonials2({ testimonials }: { testimonials: Testimon
   const len = testimonials?.length || 0;
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement | null>(null);
+
   const next = useCallback(() => {
     if (len === 0) return;
     setActive((prev) => (prev + 1) % len);
@@ -34,17 +37,30 @@ export default function Testimonials2({ testimonials }: { testimonials: Testimon
     setActive(i);
   }, []);
 
+  // Track section visibility — only autoplay when on-screen
   useEffect(() => {
-    if (paused || len === 0) return;
+    const el = sectionRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0.1 },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (paused || !isVisible || len === 0) return;
     const timer = setInterval(next, 6000);
     return () => clearInterval(timer);
-  }, [paused, next, len]);
+  }, [paused, isVisible, next, len]);
 
   const current = testimonials?.[active];
   if (!current) return null;
 
   return (
     <section
+      ref={sectionRef}
       id="testimonials"
       className="t2-section dark-section section-top-glow relative py-14 md:py-20"
     >

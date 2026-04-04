@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
+import MosaicCTA from "@/components/ui/MosaicCTA";
 import type { SanityProjectListItem } from "@/sanity/lib/types";
 import "./projects-v5.css";
 import "./projects-hero.css";
@@ -192,63 +193,8 @@ export default function ProjectsPageClient({
         )}
 
         {/* ── Bottom CTA ── */}
-        <div className="p5-bottom p5-reveal">
-          {/* Project images mosaic background */}
-          <div className="p5-bottom-mosaic" aria-hidden="true">
-            <div className="p5-bottom-mosaic-track">
-              {[...projects, ...projects].map((p, i) => (
-                <div key={`${p.slug}-${i}`} className="p5-bottom-mosaic-item">
-                  <Image
-                    src={p.image ? urlFor(p.image).width(200).url() : "/placeholder.jpg"}
-                    alt=""
-                    fill
-                    sizes="200px"
-                    className="p5-bottom-mosaic-img"
-                  />
-                </div>
-              ))}
-            </div>
-            <div className="p5-bottom-mosaic-track p5-bottom-mosaic-track--reverse">
-              {[...projects.slice().reverse(), ...projects.slice().reverse()].map((p, i) => (
-                <div key={`${p.slug}-rev-${i}`} className="p5-bottom-mosaic-item">
-                  <Image
-                    src={p.image ? urlFor(p.image).width(200).url() : "/placeholder.jpg"}
-                    alt=""
-                    fill
-                    sizes="200px"
-                    className="p5-bottom-mosaic-img"
-                  />
-                </div>
-              ))}
-            </div>
-            <div className="p5-bottom-mosaic-track">
-              {[...projects.slice(2), ...projects, ...projects.slice(0, 2)].map((p, i) => (
-                <div key={`${p.slug}-alt-${i}`} className="p5-bottom-mosaic-item">
-                  <Image
-                    src={p.image ? urlFor(p.image).width(200).url() : "/placeholder.jpg"}
-                    alt=""
-                    fill
-                    sizes="200px"
-                    className="p5-bottom-mosaic-img"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="p5-bottom-mosaic-overlay" aria-hidden="true" />
-
-          <span className="p5-bottom-border" aria-hidden="true" />
-          <div className="p5-bottom-inner">
-            <h3 className="p5-bottom-heading">Have a project in mind?</h3>
-            <p className="p5-bottom-sub">Let&apos;s craft something exceptional together.</p>
-            <Link href="/contact" className="p5-bottom-btn">
-              <span>Start a Conversation</span>
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="3" y1="15" x2="15" y2="3" />
-                <polyline points="7 3 15 3 15 11" />
-              </svg>
-            </Link>
-          </div>
+        <div className="p5-reveal">
+          <MosaicCTA projects={projects} prefix="p5" />
         </div>
       </div>
     </div>

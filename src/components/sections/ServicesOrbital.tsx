@@ -5,13 +5,14 @@ import "./services-orbital.css";
 import SectionHeader from "@/components/ui/SectionHeader";
 import AmbientEffects from "@/components/ui/AmbientEffects";
 import { urlFor } from "@/sanity/lib/image";
+import type { SanityImage } from "@/sanity/lib/types";
 
 interface ServiceItem {
   number: string;
   title: string;
   description: string;
   tags: string[];
-  image: any; // Sanity image
+  image: SanityImage;
 }
 
 const AUTOPLAY_INTERVAL = 3000;
@@ -20,6 +21,8 @@ export default function ServicesOrbital({ services }: { services: ServiceItem[] 
   const len = services?.length || 0;
   const [active, setActive] = useState(Math.min(2, Math.max(0, len - 1)));
   const [paused, setPaused] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const goTo = useCallback(
@@ -33,15 +36,27 @@ export default function ServicesOrbital({ services }: { services: ServiceItem[] 
   const prev = useCallback(() => goTo(active - 1), [active, goTo]);
   const next = useCallback(() => goTo(active + 1), [active, goTo]);
 
+  // Track section visibility — only autoplay when on-screen
   useEffect(() => {
-    if (paused) return;
+    const el = sectionRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0.1 },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (paused || !isVisible) return;
     timeoutRef.current = setTimeout(() => {
       goTo(active + 1);
     }, AUTOPLAY_INTERVAL);
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [active, paused, goTo]);
+  }, [active, paused, isVisible, goTo]);
 
   const getPosition = (index: number): string => {
     const len = services.length;
@@ -60,6 +75,7 @@ export default function ServicesOrbital({ services }: { services: ServiceItem[] 
 
   return (
     <section
+      ref={sectionRef}
       id="services"
       className="sf-section dark-section section-top-glow relative pt-20 pb-10 md:pt-24 md:pb-14"
     >

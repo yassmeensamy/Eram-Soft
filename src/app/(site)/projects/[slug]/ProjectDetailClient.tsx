@@ -2,234 +2,54 @@
 
 import { useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import {
+  Compass, Map, Bell, BarChart3, Globe, Shield, Truck, Tag,
+  CreditCard, Home, Zap, Repeat, Video, User, ShoppingBag,
+  Award, BarChart, Clock, QrCode, Coffee, Gift, Tablet,
+  PieChart, FileText, AlertTriangle, Layers, MessageSquare,
+  Lock, Database,
+} from "lucide-react";
 import { urlFor } from "@/sanity/lib/image";
+import MosaicCTA from "@/components/ui/MosaicCTA";
 import type { SanityProject, SanityProjectListItem } from "@/sanity/lib/types";
 import "./project-detail.css";
 
 /* ── Icon component for features ── */
+const FEATURE_ICONS: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
+  compass: Compass,
+  map: Map,
+  bell: Bell,
+  chart: BarChart3,
+  globe: Globe,
+  shield: Shield,
+  truck: Truck,
+  tag: Tag,
+  "credit-card": CreditCard,
+  store: Home,
+  zap: Zap,
+  repeat: Repeat,
+  video: Video,
+  user: User,
+  "shopping-bag": ShoppingBag,
+  award: Award,
+  "bar-chart": BarChart,
+  clock: Clock,
+  "qr-code": QrCode,
+  coffee: Coffee,
+  gift: Gift,
+  tablet: Tablet,
+  "pie-chart": PieChart,
+  "file-text": FileText,
+  "alert-triangle": AlertTriangle,
+  layers: Layers,
+  "message-square": MessageSquare,
+  lock: Lock,
+  database: Database,
+};
+
 function FeatureIcon({ name }: { name: string }) {
-  const iconMap: Record<string, React.ReactNode> = {
-    compass: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10" />
-        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-      </svg>
-    ),
-    map: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6" />
-        <line x1="8" y1="2" x2="8" y2="18" />
-        <line x1="16" y1="6" x2="16" y2="22" />
-      </svg>
-    ),
-    bell: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-      </svg>
-    ),
-    chart: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <line x1="18" y1="20" x2="18" y2="10" />
-        <line x1="12" y1="20" x2="12" y2="4" />
-        <line x1="6" y1="20" x2="6" y2="14" />
-      </svg>
-    ),
-    globe: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10" />
-        <line x1="2" y1="12" x2="22" y2="12" />
-        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-      </svg>
-    ),
-    shield: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-      </svg>
-    ),
-    truck: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="1" y="3" width="15" height="13" />
-        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
-        <circle cx="5.5" cy="18.5" r="2.5" />
-        <circle cx="18.5" cy="18.5" r="2.5" />
-      </svg>
-    ),
-    tag: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
-        <line x1="7" y1="7" x2="7.01" y2="7" />
-      </svg>
-    ),
-    "credit-card": (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
-        <line x1="1" y1="10" x2="23" y2="10" />
-      </svg>
-    ),
-    store: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-        <polyline points="9 22 9 12 15 12 15 22" />
-      </svg>
-    ),
-    zap: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-      </svg>
-    ),
-    repeat: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="17 1 21 5 17 9" />
-        <path d="M3 11V9a4 4 0 0 1 4-4h14" />
-        <polyline points="7 23 3 19 7 15" />
-        <path d="M21 13v2a4 4 0 0 1-4 4H3" />
-      </svg>
-    ),
-    video: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <polygon points="23 7 16 12 23 17 23 7" />
-        <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
-      </svg>
-    ),
-    user: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-        <circle cx="12" cy="7" r="4" />
-      </svg>
-    ),
-    "shopping-bag": (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-        <line x1="3" y1="6" x2="21" y2="6" />
-        <path d="M16 10a4 4 0 0 1-8 0" />
-      </svg>
-    ),
-    award: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="8" r="7" />
-        <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
-      </svg>
-    ),
-    "bar-chart": (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <line x1="12" y1="20" x2="12" y2="10" />
-        <line x1="18" y1="20" x2="18" y2="4" />
-        <line x1="6" y1="20" x2="6" y2="16" />
-      </svg>
-    ),
-    clock: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10" />
-        <polyline points="12 6 12 12 16 14" />
-      </svg>
-    ),
-    "qr-code": (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="2" y="2" width="8" height="8" rx="1" />
-        <rect x="14" y="2" width="8" height="8" rx="1" />
-        <rect x="2" y="14" width="8" height="8" rx="1" />
-        <rect x="14" y="14" width="4" height="4" rx="1" />
-        <line x1="22" y1="14" x2="22" y2="14.01" />
-        <line x1="22" y1="18" x2="22" y2="22" />
-        <line x1="18" y1="22" x2="18" y2="22.01" />
-      </svg>
-    ),
-    coffee: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
-        <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
-        <line x1="6" y1="1" x2="6" y2="4" />
-        <line x1="10" y1="1" x2="10" y2="4" />
-        <line x1="14" y1="1" x2="14" y2="4" />
-      </svg>
-    ),
-    gift: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="20 12 20 22 4 22 4 12" />
-        <rect x="2" y="7" width="20" height="5" />
-        <line x1="12" y1="22" x2="12" y2="7" />
-        <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z" />
-        <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" />
-      </svg>
-    ),
-    tablet: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="4" y="2" width="16" height="20" rx="2" ry="2" />
-        <line x1="12" y1="18" x2="12.01" y2="18" />
-      </svg>
-    ),
-    "pie-chart": (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
-        <path d="M22 12A10 10 0 0 0 12 2v10z" />
-      </svg>
-    ),
-    "file-text": (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-        <polyline points="14 2 14 8 20 8" />
-        <line x1="16" y1="13" x2="8" y2="13" />
-        <line x1="16" y1="17" x2="8" y2="17" />
-        <polyline points="10 9 9 9 8 9" />
-      </svg>
-    ),
-    "alert-triangle": (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-        <line x1="12" y1="9" x2="12" y2="13" />
-        <line x1="12" y1="17" x2="12.01" y2="17" />
-      </svg>
-    ),
-    layers: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <polygon points="12 2 2 7 12 12 22 7 12 2" />
-        <polyline points="2 17 12 22 22 17" />
-        <polyline points="2 12 12 17 22 12" />
-      </svg>
-    ),
-    "message-square": (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-      </svg>
-    ),
-    lock: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-      </svg>
-    ),
-    database: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <ellipse cx="12" cy="5" rx="9" ry="3" />
-        <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
-        <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
-      </svg>
-    ),
-  };
-
-  return <>{iconMap[name] || iconMap.zap}</>;
-}
-
-/* ── Tech role mapping ── */
-function getTechRole(tech: string): string {
-  const roles: Record<string, string> = {
-    Flutter: "Frontend",
-    "React Native": "Frontend",
-    "Next.js": "Frontend",
-    React: "Frontend",
-    Firebase: "Backend & Database",
-    "Node.js": "Backend",
-    PostgreSQL: "Database",
-    "Google Maps": "Maps & Location",
-    Stripe: "Payments",
-    "QR Integration": "Hardware Integration",
-    Python: "Backend & AI",
-    "GPT-4": "AI / NLP Engine",
-    Kubernetes: "Infrastructure",
-  };
-  return roles[tech] || "Core Technology";
+  const Icon = FEATURE_ICONS[name] ?? Zap;
+  return <Icon size={20} />;
 }
 
 /* ── Tech logo mapping ── */
@@ -360,11 +180,7 @@ export default function ProjectDetailClient({
           {project.websiteUrl && (
               <a href={project.websiteUrl} target="_blank" rel="noopener noreferrer" className="pd-download">
                 <div className="pd-download-icon">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="10" />
-                    <line x1="2" y1="12" x2="22" y2="12" />
-                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                  </svg>
+                  <Globe size={20} />
                 </div>
                 <div className="pd-download-info">
                   <span className="pd-download-label">Visit the</span>
@@ -429,7 +245,7 @@ export default function ProjectDetailClient({
                 <div className="pd-client-tech">
                   {(project.tech ?? []).map((t) => (
                     <span key={t} className="pd-tech-tag">
-                      <img src={getTechLogo(t)} alt="" className="pd-tech-tag-logo" />
+                      <Image src={getTechLogo(t)} alt="" width={16} height={16} className="pd-tech-tag-logo" />
                       {t}
                     </span>
                   ))}
@@ -456,9 +272,11 @@ export default function ProjectDetailClient({
                 className="pd-gallery-item"
               >
                 <div className="pd-device-frame">
-                  <img
+                  <Image
                     src={img ? urlFor(img).width(800).url() : "/placeholder.jpg"}
                     alt={`${project.title} screenshot ${i + 1}`}
+                    width={800}
+                    height={isMobileApp ? 1600 : 500}
                     className={`pd-gallery-img ${!isMobileApp ? "pd-gallery-img--web" : ""}`}
                   />
                 </div>
@@ -477,7 +295,7 @@ export default function ProjectDetailClient({
         <div className="pd-divider" />
 
         <div className={`pd-kc-grid ${(project.features ?? []).length > 6 ? "pd-kc-grid--scroll" : ""}`}>
-          {(project.features ?? []).map((feature, i) => (
+          {(project.features ?? []).map((feature) => (
             <div key={feature.title} className="pd-kc-card">
               <div className="pd-kc-card-glow" />
               <div className="pd-kc-card-inner">
@@ -513,65 +331,9 @@ export default function ProjectDetailClient({
       )}
 
       {/* Bottom CTA — Mosaic */}
-      <div className="pd-bottom pd-reveal">
-        {/* Project images mosaic background */}
-        <div className="pd-bottom-mosaic" aria-hidden="true">
-          <div className="pd-bottom-mosaic-track">
-            {[...allProjects, ...allProjects].map((p, i) => (
-              <div key={`${p.slug}-${i}`} className="pd-bottom-mosaic-item">
-                <Image
-                  src={p.image ? urlFor(p.image).width(200).url() : "/placeholder.jpg"}
-                  alt=""
-                  fill
-                  sizes="200px"
-                  className="pd-bottom-mosaic-img"
-                />
-              </div>
-            ))}
-          </div>
-          <div className="pd-bottom-mosaic-track pd-bottom-mosaic-track--reverse">
-            {[...allProjects.slice().reverse(), ...allProjects.slice().reverse()].map((p, i) => (
-              <div key={`${p.slug}-rev-${i}`} className="pd-bottom-mosaic-item">
-                <Image
-                  src={p.image ? urlFor(p.image).width(200).url() : "/placeholder.jpg"}
-                  alt=""
-                  fill
-                  sizes="200px"
-                  className="pd-bottom-mosaic-img"
-                />
-              </div>
-            ))}
-          </div>
-          <div className="pd-bottom-mosaic-track">
-            {[...allProjects.slice(2), ...allProjects, ...allProjects.slice(0, 2)].map((p, i) => (
-              <div key={`${p.slug}-alt-${i}`} className="pd-bottom-mosaic-item">
-                <Image
-                  src={p.image ? urlFor(p.image).width(200).url() : "/placeholder.jpg"}
-                  alt=""
-                  fill
-                  sizes="200px"
-                  className="pd-bottom-mosaic-img"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="pd-bottom-mosaic-overlay" aria-hidden="true" />
-
-        <span className="pd-bottom-border" aria-hidden="true" />
-        <div className="pd-bottom-inner">
-          <h3 className="pd-bottom-heading">Have a project in mind?</h3>
-          <p className="pd-bottom-sub">Let&apos;s craft something exceptional together.</p>
-          <Link href="/contact" className="pd-bottom-btn">
-            <span>Start a Conversation</span>
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="3" y1="15" x2="15" y2="3" />
-              <polyline points="7 3 15 3 15 11" />
-            </svg>
-          </Link>
-        </div>
+      <div className="pd-reveal">
+        <MosaicCTA projects={allProjects} prefix="pd" />
       </div>
-
     </div>
   );
 }

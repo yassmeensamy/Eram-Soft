@@ -45,6 +45,37 @@
   z-index: 0;
 }
 
+/* ── Progress glow overlay ── */
+
+.hw-timeline-progress {
+  position: absolute;
+  top: 35px;
+  left: 36px;
+  right: 36px;
+  height: 4px;
+  border-radius: 2px;
+  z-index: 0;
+  transform-origin: left center;
+  transform: scaleX(0);
+  opacity: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(var(--neon-rgb), 0.6) 0%,
+    rgba(var(--neon-rgb), 0.8) 50%,
+    rgba(var(--neon-rgb), 0.6) 100%
+  );
+  box-shadow:
+    0 0 12px rgba(var(--neon-rgb), 0.4),
+    0 0 24px rgba(var(--neon-rgb), 0.15);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.3s ease;
+}
+
+.hw-timeline-progress--on {
+  opacity: 1;
+  transform: scaleX(var(--hw-progress, 0));
+}
+
 
 
 /* ── Individual step ── */
@@ -118,6 +149,14 @@
               background 0.4s ease;
 }
 
+.hw-step--reached .hw-step-node-ring {
+  border-color: rgba(var(--neon-rgb), 0.3);
+  box-shadow:
+    0 0 16px rgba(var(--neon-rgb), 0.1),
+    0 0 32px rgba(var(--neon-rgb), 0.05);
+  background: rgba(28, 40, 60, 0.85);
+}
+
 .hw-step:hover .hw-step-node-ring,
 .hw-step--active .hw-step-node-ring {
   border-color: rgba(var(--neon-rgb), 0.4);
@@ -136,6 +175,10 @@
   justify-content: center;
   color: rgba(var(--neon-rgb), 0.5);
   transition: color 0.4s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hw-step--reached .hw-step-node-icon {
+  color: rgba(var(--neon-rgb), 0.7);
 }
 
 .hw-step:hover .hw-step-node-icon,
@@ -178,6 +221,10 @@
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   margin-bottom: 8px;
   transition: color 0.4s ease;
+}
+
+.hw-step--reached .hw-step-number {
+  color: rgba(var(--neon-rgb), 0.6);
 }
 
 .hw-step:hover .hw-step-number,
@@ -248,6 +295,12 @@
     left: 30px;
     right: 30px;
   }
+
+  .hw-timeline-progress {
+    top: 29px;
+    left: 30px;
+    right: 30px;
+  }
 }
 
 
@@ -270,6 +323,21 @@
     right: auto;
     width: 2px;
     height: auto;
+  }
+
+  .hw-timeline-progress {
+    top: 36px;
+    bottom: 36px;
+    left: 17px;
+    right: auto;
+    width: 4px;
+    height: auto;
+    transform-origin: top center;
+    transform: scaleY(0);
+  }
+
+  .hw-timeline-progress--on {
+    transform: scaleY(var(--hw-progress, 0));
   }
 
   .hw-step {
