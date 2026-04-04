@@ -9,17 +9,15 @@
 
 [data-reveal] {
   opacity: 0;
-  filter: blur(6px);
   transform: translateY(20px);
-  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-              filter 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   transition-delay: var(--delay, 0s);
+  will-change: opacity, transform;
 }
 
 [data-reveal].is-visible {
   opacity: 1;
-  filter: blur(0);
   transform: none;
 }
 
@@ -789,15 +787,19 @@
 /* ── Answer body ── */
 
 .ct-faq-body {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s cubic-bezier(0.22, 1, 0.36, 1),
               opacity 0.35s ease;
   opacity: 0;
 }
 
+.ct-faq-body > * {
+  overflow: hidden;
+}
+
 .ct-faq-item--open .ct-faq-body {
-  max-height: 300px;
+  grid-template-rows: 1fr;
   opacity: 1;
 }
 

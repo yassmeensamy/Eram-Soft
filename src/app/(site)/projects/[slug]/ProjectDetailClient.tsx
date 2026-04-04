@@ -109,10 +109,16 @@ export default function ProjectDetailClient({
 
       {/* Hero Section */}
       <section className="pd-hero">
-        <div
-          className="pd-hero-img"
-          style={{ backgroundImage: `url(${heroImageUrl})` }}
-        />
+        <div className="pd-hero-img">
+          <Image
+            src={heroImageUrl}
+            alt={project.title}
+            fill
+            priority
+            sizes="100vw"
+            className="pd-hero-img-el"
+          />
+        </div>
         <div className="pd-hero-overlay" />
         <div className="pd-hero-scanline" aria-hidden="true" />
 

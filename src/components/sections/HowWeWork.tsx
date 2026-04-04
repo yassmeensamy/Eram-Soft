@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useEffect, useRef } from "react";
 import SectionHeader from "@/components/ui/SectionHeader";
 import AmbientEffects from "@/components/ui/AmbientEffects";
 import "./how-we-work.css";
@@ -53,10 +53,62 @@ const stepIcons: Record<string, ReactNode> = {
 };
 
 export default function HowWeWork({ steps }: { steps: StepItem[] }) {
-  const [activeStep, setActiveStep] = useState<number | null>(null);
+  const [reachedStep, setReachedStep] = useState(-1);
+  const [hoverStep, setHoverStep] = useState<number | null>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const timelineRef = useRef<HTMLDivElement | null>(null);
+  const nodeRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const hasPlayed = useRef(false);
+  const [lineStyle, setLineStyle] = useState({ left: 0, right: 0, top: 36 });
+
+  // The active step is either hover (takes priority) or the auto-animated reached step
+  const activeStep = hoverStep !== null ? hoverStep : reachedStep;
+  const progress = steps.length > 1 ? Math.max(0, activeStep) / (steps.length - 1) : 0;
+
+  // Measure node positions
+  useEffect(() => {
+    const measure = () => {
+      const container = timelineRef.current;
+      if (!container || nodeRefs.current.length === 0) return;
+      const containerRect = container.getBoundingClientRect();
+      const first = nodeRefs.current[0];
+      const last = nodeRefs.current[nodeRefs.current.length - 1];
+      if (!first || !last) return;
+      const firstRect = first.getBoundingClientRect();
+      const lastRect = last.getBoundingClientRect();
+      setLineStyle({
+        left: firstRect.left - containerRect.left + firstRect.width / 2,
+        right: containerRect.right - lastRect.right + lastRect.width / 2,
+        top: firstRect.top - containerRect.top + firstRect.height / 2,
+      });
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [steps]);
+
+  // Scroll-triggered sequential animation
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasPlayed.current) {
+          hasPlayed.current = true;
+          steps.forEach((_, i) => {
+            setTimeout(() => setReachedStep(i), i * 400);
+          });
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.25 },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [steps]);
 
   return (
-    <section id="how-we-work" className="hw-section dark-section section-top-glow relative py-20 md:py-28">
+    <section ref={sectionRef} id="how-we-work" className="hw-section dark-section section-top-glow relative py-20 md:py-28">
       <AmbientEffects />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 md:px-12 lg:px-16">
@@ -70,38 +122,46 @@ export default function HowWeWork({ steps }: { steps: StepItem[] }) {
         </div>
 
         <div
+          ref={timelineRef}
           className="hw-timeline"
-          style={{
-            "--hw-progress": activeStep !== null && steps.length > 1
-              ? activeStep / (steps.length - 1)
-              : 0,
-          } as React.CSSProperties}
+          style={{ "--hw-progress": progress } as React.CSSProperties}
         >
-          <div className="hw-timeline-line" aria-hidden="true" />
-          <div className={`hw-timeline-progress${activeStep !== null ? " hw-timeline-progress--on" : ""}`} aria-hidden="true" />
+          <div
+            className="hw-timeline-line"
+            aria-hidden="true"
+            style={{ left: lineStyle.left, right: lineStyle.right, top: lineStyle.top }}
+          />
+          <div
+            className={`hw-timeline-progress${activeStep >= 0 ? " hw-timeline-progress--on" : ""}`}
+            aria-hidden="true"
+            style={{ left: lineStyle.left, right: lineStyle.right, top: lineStyle.top - 1 }}
+          />
 
-          {steps.map((step, i) => (
-            <div
-              key={step.number}
-              className={`hw-step hw-step-animate ${
-                activeStep === i ? "hw-step--active" : ""
-              } ${activeStep !== null && i <= activeStep ? "hw-step--reached" : ""}`}
-              style={{ animationDelay: `${i * 0.15}s` }}
-              onMouseEnter={() => setActiveStep(i)}
-              onMouseLeave={() => setActiveStep(null)}
-            >
-              <div className="hw-step-node">
-                <div className="hw-step-node-ring" />
-                <div className="hw-step-node-icon">{stepIcons[step.iconKey]}</div>
-              </div>
+          {steps.map((step, i) => {
+            const isLit = i <= activeStep;
+            return (
+              <div
+                key={step.number}
+                className={`hw-step ${isLit ? "hw-step--reached" : ""} ${hoverStep === i ? "hw-step--hover" : ""}`}
+                onMouseEnter={() => setHoverStep(i)}
+                onMouseLeave={() => setHoverStep(null)}
+              >
+                <div
+                  className="hw-step-node"
+                  ref={(el) => { nodeRefs.current[i] = el; }}
+                >
+                  <div className="hw-step-node-ring" />
+                  <div className="hw-step-node-icon">{stepIcons[step.iconKey]}</div>
+                </div>
 
-              <div className="hw-step-content">
-                <span className="hw-step-number">{step.number}</span>
-                <h3 className="hw-step-title">{step.title}</h3>
-                <p className="hw-step-desc">{step.description}</p>
+                <div className="hw-step-content">
+                  <span className="hw-step-number">{step.number}</span>
+                  <h3 className="hw-step-title">{step.title}</h3>
+                  <p className="hw-step-desc">{step.description}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

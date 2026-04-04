@@ -28,17 +28,15 @@ const menuVariants = {
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 6, filter: "blur(4px)" },
+  hidden: { opacity: 0, y: 6 },
   visible: {
     opacity: 1,
     y: 0,
-    filter: "blur(0px)",
     transition: { duration: 0.25, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
   },
   exit: {
     opacity: 0,
     y: 4,
-    filter: "blur(4px)",
     transition: { duration: 0.15 },
   },
 };

@@ -31,6 +31,15 @@ export const projectsListQuery = groq`
   }
 `;
 
+// ── Projects (lightweight — for MosaicCTA) ──
+export const projectsMosaicQuery = groq`
+  *[_type == "project"] | order(orderRank asc) {
+    title,
+    "slug": slug.current,
+    image
+  }
+`;
+
 export const projectBySlugQuery = groq`
   *[_type == "project" && slug.current == $slug][0] {
     title,

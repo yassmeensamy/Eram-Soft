@@ -39,6 +39,7 @@
     0 8px 40px rgba(var(--neon-rgb), 0.12),
     0 0 0 1px rgba(255, 255, 255, 0.06) inset;
   outline: none;
+  will-change: transform;
 }
 
 /* Outer pulse ring */
@@ -182,6 +183,7 @@
   background: transparent;
   width: 100%;
   position: relative;
+  will-change: transform, opacity;
 }
 
 .fc-option:hover {

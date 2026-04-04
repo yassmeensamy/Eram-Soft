@@ -1,7 +1,6 @@
 /* ══════════════════════════════════════════════════
    How We Work Section — Process Timeline
-   Horizontal steps with connected nodes and
-   expanding content on hover.
+   Scroll-triggered sequential reveal.
    All classes prefixed hw-.
    ══════════════════════════════════════════════════ */
 
@@ -27,7 +26,7 @@
 }
 
 
-/* ── Connecting horizontal line ── */
+/* ── Connecting horizontal line (background) ── */
 
 .hw-timeline-line {
   position: absolute;
@@ -45,7 +44,7 @@
   z-index: 0;
 }
 
-/* ── Progress glow overlay ── */
+/* ── Progress glow line (animates on scroll) ── */
 
 .hw-timeline-progress {
   position: absolute;
@@ -67,7 +66,7 @@
   box-shadow:
     0 0 12px rgba(var(--neon-rgb), 0.4),
     0 0 24px rgba(var(--neon-rgb), 0.15);
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
               opacity 0.3s ease;
 }
 
@@ -77,8 +76,9 @@
 }
 
 
-
-/* ── Individual step ── */
+/* ══════════════════════════════════════════════════
+   STEP
+   ══════════════════════════════════════════════════ */
 
 .hw-step {
   flex: 1;
@@ -89,40 +89,32 @@
   position: relative;
   z-index: 1;
   cursor: pointer;
-  transition: opacity 0.4s ease;
 }
 
-/* ── Entrance animation ── */
-
-@keyframes hw-fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(32px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Hover: node lifts */
+.hw-step--hover .hw-step-node {
+  transform: scale(1.12) translateY(-4px);
 }
 
-@keyframes hw-lineGrow {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
+.hw-step--hover .hw-step-node-ring {
+  border-color: rgba(var(--neon-rgb), 0.5);
+  box-shadow:
+    0 0 28px rgba(var(--neon-rgb), 0.2),
+    0 0 56px rgba(var(--neon-rgb), 0.08),
+    inset 0 0 16px rgba(var(--neon-rgb), 0.06);
 }
 
-.hw-step-animate {
-  opacity: 0;
-  animation: hw-fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+.hw-step--hover .hw-step-node-icon {
+  color: var(--neon-light);
+  transform: scale(1.1);
 }
 
-.hw-timeline-line {
-  transform-origin: left center;
-  animation: hw-lineGrow 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
-  transform: scaleX(0);
+.hw-step--hover .hw-step-number {
+  color: rgba(var(--neon-rgb), 0.9);
+}
+
+.hw-step--hover .hw-step-title {
+  color: var(--neon-light);
 }
 
 
@@ -134,36 +126,32 @@
   height: 72px;
   margin-bottom: 24px;
   flex-shrink: 0;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hw-step--reached .hw-step-node {
+  transform: scale(1.08);
 }
 
 .hw-step-node-ring {
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  border: 1.5px solid rgba(var(--neon-rgb), 0.12);
+  border: 1.5px solid rgba(var(--neon-rgb), 0.08);
   background: rgba(24, 34, 52, 0.8);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  transition: border-color 0.4s ease,
-              box-shadow 0.4s ease,
-              background 0.4s ease;
+  transition: border-color 0.5s ease,
+              box-shadow 0.5s ease,
+              background 0.5s ease;
 }
 
 .hw-step--reached .hw-step-node-ring {
-  border-color: rgba(var(--neon-rgb), 0.3);
-  box-shadow:
-    0 0 16px rgba(var(--neon-rgb), 0.1),
-    0 0 32px rgba(var(--neon-rgb), 0.05);
-  background: rgba(28, 40, 60, 0.85);
-}
-
-.hw-step:hover .hw-step-node-ring,
-.hw-step--active .hw-step-node-ring {
   border-color: rgba(var(--neon-rgb), 0.4);
   box-shadow:
-    0 0 24px rgba(var(--neon-rgb), 0.12),
-    0 0 48px rgba(var(--neon-rgb), 0.06),
-    inset 0 0 16px rgba(var(--neon-rgb), 0.04);
+    0 0 20px rgba(var(--neon-rgb), 0.15),
+    0 0 40px rgba(var(--neon-rgb), 0.06),
+    inset 0 0 12px rgba(var(--neon-rgb), 0.04);
   background: rgba(28, 40, 60, 0.9);
 }
 
@@ -173,35 +161,49 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(var(--neon-rgb), 0.5);
-  transition: color 0.4s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  color: rgba(var(--neon-rgb), 0.25);
+  transition: color 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .hw-step--reached .hw-step-node-icon {
-  color: rgba(var(--neon-rgb), 0.7);
-}
-
-.hw-step:hover .hw-step-node-icon,
-.hw-step--active .hw-step-node-icon {
   color: rgba(var(--neon-rgb), 0.9);
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
-/* Outer pulse ring on hover */
+/* Outer pulse ring on reached */
 .hw-step-node::after {
   content: '';
   position: absolute;
-  inset: -8px;
+  inset: -10px;
   border-radius: 50%;
-  border: 1px solid rgba(var(--neon-rgb), 0);
-  transition: border-color 0.4s ease, transform 0.4s ease;
-  transform: scale(0.9);
+  border: 1.5px solid rgba(var(--neon-rgb), 0);
+  transition: border-color 0.4s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
+  transform: scale(0.7);
+  opacity: 0;
 }
 
-.hw-step:hover .hw-step-node::after,
-.hw-step--active .hw-step-node::after {
-  border-color: rgba(var(--neon-rgb), 0.08);
+.hw-step--reached .hw-step-node::after {
+  border-color: rgba(var(--neon-rgb), 0.18);
   transform: scale(1);
+  opacity: 1;
+}
+
+/* Inner dot pulse when reached */
+.hw-step-node::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(var(--neon-rgb), 0.12) 0%, transparent 70%);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 0;
+}
+
+.hw-step--reached .hw-step-node::before {
+  opacity: 1;
+  transform: scale(1.4);
 }
 
 
@@ -210,6 +212,14 @@
 .hw-step-content {
   padding: 0 8px;
   max-width: 220px;
+  opacity: 0.35;
+  transform: translateY(8px);
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hw-step--reached .hw-step-content {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .hw-step-number {
@@ -217,18 +227,13 @@
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.15em;
-  color: rgba(var(--neon-rgb), 0.35);
+  color: rgba(var(--neon-rgb), 0.2);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   margin-bottom: 8px;
-  transition: color 0.4s ease;
+  transition: color 0.5s ease;
 }
 
 .hw-step--reached .hw-step-number {
-  color: rgba(var(--neon-rgb), 0.6);
-}
-
-.hw-step:hover .hw-step-number,
-.hw-step--active .hw-step-number {
   color: rgba(var(--neon-rgb), 0.8);
 }
 
@@ -242,8 +247,7 @@
   transition: color 0.4s ease;
 }
 
-.hw-step:hover .hw-step-title,
-.hw-step--active .hw-step-title {
+.hw-step--reached .hw-step-title {
   color: var(--text-bright);
 }
 
@@ -251,15 +255,6 @@
   font-size: 0.78rem;
   line-height: 1.7;
   color: rgba(122, 141, 164, 0.7);
-  opacity: 0.6;
-  transform: translateY(4px);
-  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.hw-step:hover .hw-step-desc,
-.hw-step--active .hw-step-desc {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 
@@ -305,7 +300,7 @@
 
 
 /* ══════════════════════════════════════════════════
-   RESPONSIVE — Mobile
+   RESPONSIVE — Mobile (vertical timeline)
    ══════════════════════════════════════════════════ */
 
 @media (max-width: 640px) {
@@ -315,7 +310,6 @@
     padding-left: 44px;
   }
 
-  /* Vertical line instead of horizontal */
   .hw-timeline-line {
     top: 36px;
     bottom: 36px;
@@ -370,5 +364,4 @@
   .hw-step-desc {
     color: rgba(122, 141, 164, 0.75);
   }
-
 }
