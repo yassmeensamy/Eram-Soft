@@ -177,7 +177,7 @@ body {
     rgba(var(--neon-rgb), 0.015) 40%,
     transparent 70%
   );
-  filter: blur(30px);
+  filter: blur(15px);
 }
 
 .st-motes {
@@ -271,6 +271,7 @@ body {
 }
 
 .section-noise {
+  display: none;
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -283,7 +284,6 @@ body {
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
-  filter: blur(100px);
 }
 
 .section-top-glow::before {
@@ -296,7 +296,7 @@ body {
   height: 200px;
   border-radius: 50%;
   background: radial-gradient(ellipse, rgba(var(--neon-rgb), 0.04) 0%, transparent 70%);
-  filter: blur(40px);
+  filter: blur(15px);
   z-index: 0;
   pointer-events: none;
 }

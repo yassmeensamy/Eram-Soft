@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { defaultOgImage } from "@/lib/metadata";
+import { projectsListQuery } from "@/sanity/lib/queries";
+import type { SanityProjectListItem } from "@/sanity/lib/types";
+import ProjectsPageClient from "./ProjectsPageClient";
 
 export const metadata: Metadata = {
   title: "Projects",
@@ -22,9 +25,6 @@ export const metadata: Metadata = {
     images: [defaultOgImage.url],
   },
 };
-import { projectsListQuery } from "@/sanity/lib/queries";
-import type { SanityProjectListItem } from "@/sanity/lib/types";
-import ProjectsPageClient from "./ProjectsPageClient";
 
 export default async function ProjectsPage() {
   const projects = await sanityFetch<SanityProjectListItem[]>({

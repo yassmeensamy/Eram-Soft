@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { defaultOgImage } from "@/lib/metadata";
+import { aboutPageQuery, officesQuery } from "@/sanity/lib/queries";
+import type { SanityAboutPage, SanityOffice } from "@/sanity/lib/types";
+
+const AboutPageClient = dynamic(() => import("./AboutPageClient"));
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -22,9 +27,6 @@ export const metadata: Metadata = {
     images: [defaultOgImage.url],
   },
 };
-import { aboutPageQuery, officesQuery } from "@/sanity/lib/queries";
-import type { SanityAboutPage, SanityOffice } from "@/sanity/lib/types";
-import AboutPageClient from "./AboutPageClient";
 
 export default async function AboutPage() {
   const [aboutData, offices] = await Promise.all([

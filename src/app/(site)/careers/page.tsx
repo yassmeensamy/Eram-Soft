@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { sanityFetch } from "@/sanity/lib/fetch";
 import { defaultOgImage } from "@/lib/metadata";
 
@@ -24,7 +25,8 @@ export const metadata: Metadata = {
 };
 import { careersPageQuery } from "@/sanity/lib/queries";
 import type { SanityCareersPage } from "@/sanity/lib/types";
-import CareersPageClient from "./CareersPageClient";
+
+const CareersPageClient = dynamic(() => import("./CareersPageClient"));
 
 export default async function CareersPage() {
   const careersData = await sanityFetch<SanityCareersPage>({

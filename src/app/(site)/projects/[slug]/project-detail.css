@@ -18,7 +18,7 @@
   );
   min-height: 100vh;
   position: relative;
-  overflow-x: clip;
+  overflow-x: hidden;
   padding-bottom: 1px;
 }
 
@@ -29,7 +29,7 @@
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
-  filter: blur(130px);
+  filter: blur(15px);
 }
 
 .pd-glow--1 {
@@ -69,7 +69,8 @@
 /* ── Noise texture ── */
 
 .pd-noise {
-  position: fixed;
+  display: none;
+  position: absolute;
   inset: 0;
   pointer-events: none;
   opacity: 0.4;
@@ -92,8 +93,8 @@
   align-items: center;
   justify-content: space-between;
   background: rgba(20, 28, 42, 0.6);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   transition: background 0.4s ease;
 }
@@ -307,8 +308,8 @@
   border-radius: 16px;
   background: rgba(20, 28, 42, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   overflow: hidden;
   transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -402,8 +403,8 @@
   border-radius: 16px;
   background: rgba(20, 28, 42, 0.7);
   border: 1px solid rgba(var(--neon-rgb), 0.12);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   text-decoration: none;
   overflow: hidden;
   cursor: pointer;
@@ -632,8 +633,8 @@
   border-radius: 20px;
   background: rgba(20, 28, 42, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   overflow: hidden;
   height: fit-content;
 }

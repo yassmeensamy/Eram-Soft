@@ -4,7 +4,7 @@
    Theme: Dark navy / neon blue — elevated glass
    ══════════════════════════════════════════════════ */
 
-/* Fonts loaded via Next.js font system in ProjectsPageClient.tsx */
+@import url("https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap");
 
 /* ── Tokens ── */
 .p5-page {
@@ -19,8 +19,8 @@
   --p5-muted: var(--text-muted);
   --p5-dim: var(--text-dim);
   --p5-bright: var(--text-bright);
-  --p5-display: var(--p5-display-font, "Syne"), sans-serif;
-  --p5-body: var(--p5-body-font, "DM Sans"), system-ui, sans-serif;
+  --p5-display: "Syne", sans-serif;
+  --p5-body: "DM Sans", system-ui, sans-serif;
   --p5-mono: var(--font-geist-mono), "SF Mono", monospace;
 
   background: linear-gradient(
@@ -34,7 +34,7 @@
   );
   min-height: 100vh;
   position: relative;
-  overflow: clip;
+  overflow: hidden;
   color: var(--p5-text);
   font-family: var(--p5-body);
 }
@@ -45,7 +45,8 @@
    ══════════════════════════════════════════════════ */
 
 .p5-grain {
-  position: fixed;
+  display: none;
+  position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 100;
@@ -63,30 +64,27 @@
 }
 
 .p5-orb--1 {
-  width: 800px;
-  height: 800px;
+  width: 1120px;
+  height: 1120px;
   top: -20%;
   left: -12%;
-  background: radial-gradient(circle, rgba(56, 150, 235, 0.07) 0%, transparent 65%);
-  filter: blur(180px);
+  background: radial-gradient(circle, rgba(56, 150, 235, 0.05) 0%, transparent 50%);
 }
 
 .p5-orb--2 {
-  width: 600px;
-  height: 600px;
+  width: 840px;
+  height: 840px;
   bottom: 8%;
   right: -8%;
-  background: radial-gradient(circle, rgba(var(--neon-rgb), 0.045) 0%, transparent 65%);
-  filter: blur(160px);
+  background: radial-gradient(circle, rgba(var(--neon-rgb), 0.03) 0%, transparent 50%);
 }
 
 .p5-orb--3 {
-  width: 450px;
-  height: 450px;
+  width: 630px;
+  height: 630px;
   top: 45%;
   left: 25%;
-  background: radial-gradient(circle, rgba(var(--neon-rgb), 0.03) 0%, transparent 65%);
-  filter: blur(140px);
+  background: radial-gradient(circle, rgba(var(--neon-rgb), 0.02) 0%, transparent 50%);
 }
 
 
@@ -110,7 +108,6 @@
     opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
     transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   transition-delay: var(--delay, 0s);
-  will-change: opacity, transform;
 }
 
 .p5-reveal.p5-visible {

@@ -21,7 +21,7 @@
     var(--dark-bg-alt) 80%,
     var(--dark-bg) 100%
   );
-  overflow: clip;
+  overflow: hidden;
   color: var(--text-heading);
 }
 
@@ -31,6 +31,7 @@
    ══════════════════════════════════════════════════ */
 
 .legal-noise {
+  display: none;
   position: absolute;
   inset: -50%;
   width: 200%;
@@ -51,21 +52,19 @@
 }
 
 .legal-glow--1 {
-  width: 500px;
-  height: 500px;
+  width: 700px;
+  height: 700px;
   top: -12%;
   right: -8%;
-  background: radial-gradient(circle, rgba(var(--neon-rgb), 0.14) 0%, transparent 65%);
-  filter: blur(80px);
+  background: radial-gradient(circle, rgba(var(--neon-rgb), 0.09) 0%, transparent 50%);
 }
 
 .legal-glow--2 {
-  width: 350px;
-  height: 350px;
+  width: 490px;
+  height: 490px;
   top: 38%;
   left: 5%;
-  background: radial-gradient(circle, rgba(60, 130, 255, 0.09) 0%, transparent 65%);
-  filter: blur(60px);
+  background: radial-gradient(circle, rgba(60, 130, 255, 0.06) 0%, transparent 50%);
 }
 
 .legal-streak {
@@ -90,7 +89,7 @@
 }
 
 .legal-dots {
-  position: fixed;
+  position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 0;
@@ -234,8 +233,8 @@
     rgba(var(--neon-rgb), 0.02) 100%
   );
   border: 1px solid rgba(var(--neon-rgb), 0.08);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   box-shadow:
     0 32px 80px rgba(0, 0, 0, 0.35),
     0 0 0 1px rgba(255, 255, 255, 0.02) inset,

@@ -3,26 +3,11 @@
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Syne, DM_Sans } from "next/font/google";
 import { urlFor } from "@/sanity/lib/image";
 import MosaicCTA from "@/components/ui/MosaicCTA";
 import type { SanityProjectListItem } from "@/sanity/lib/types";
 import "./projects-v5.css";
 import "./projects-hero.css";
-
-const syne = Syne({
-  subsets: ["latin"],
-  variable: "--p5-display-font",
-  display: "swap",
-  weight: ["400", "600", "700", "800"],
-});
-
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  variable: "--p5-body-font",
-  display: "swap",
-  weight: ["400", "500", "600", "700"],
-});
 
 export default function ProjectsPageClient({
   projects,
@@ -77,10 +62,10 @@ export default function ProjectsPageClient({
       cancelAnimationFrame(raf);
       observer?.disconnect();
     };
-  }, [filtered]);
+  }, [filtered, visibleCount]);
 
   return (
-    <div className={`p5-page ${syne.variable} ${dmSans.variable}`}>
+    <div className="p5-page">
       {/* Ambient */}
       <div className="p5-grain" aria-hidden="true" />
       <div className="p5-orb p5-orb--1" aria-hidden="true" />
