@@ -4,7 +4,7 @@
    Theme: Dark navy / neon blue — elevated glass
    ══════════════════════════════════════════════════ */
 
-@import url("https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap");
+/* Fonts loaded via Next.js font system in ProjectsPageClient.tsx */
 
 /* ── Tokens ── */
 .p5-page {
@@ -19,8 +19,8 @@
   --p5-muted: var(--text-muted);
   --p5-dim: var(--text-dim);
   --p5-bright: var(--text-bright);
-  --p5-display: "Syne", sans-serif;
-  --p5-body: "DM Sans", system-ui, sans-serif;
+  --p5-display: var(--p5-display-font, "Syne"), sans-serif;
+  --p5-body: var(--p5-body-font, "DM Sans"), system-ui, sans-serif;
   --p5-mono: var(--font-geist-mono), "SF Mono", monospace;
 
   background: linear-gradient(
@@ -110,6 +110,7 @@
     opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
     transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   transition-delay: var(--delay, 0s);
+  will-change: opacity, transform;
 }
 
 .p5-reveal.p5-visible {

@@ -43,7 +43,7 @@ export default function Navbar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-12">
         {/* Logo */}
         <Link href="/">
-          <Image src="/logo.svg" alt="Logo" width={147} height={42} className="brightness-0 invert opacity-80" />
+          <Image src="/logo.svg" alt="Logo" width={147} height={42} priority className="brightness-0 invert opacity-80" />
         </Link>
 
         {/* Desktop Nav */}
@@ -52,6 +52,7 @@ export default function Navbar() {
             <Link
               key={link.label}
               href={link.href}
+              prefetch={true}
               className={`relative text-[13px] font-medium tracking-widest transition-colors hover:text-[#50aaff] ${
                 isActive(link.href)
                   ? "text-[#50aaff] after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-full after:bg-[#50aaff] after:rounded-full"
@@ -90,6 +91,7 @@ export default function Navbar() {
               <Link
                 key={link.label}
                 href={link.href}
+                prefetch={true}
                 onClick={() => setMobileOpen(false)}
                 className={`relative text-[13px] font-medium tracking-widest transition-colors hover:text-[#50aaff] ${
                   isActive(link.href)

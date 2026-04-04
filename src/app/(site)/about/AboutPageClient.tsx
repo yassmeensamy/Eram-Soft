@@ -29,7 +29,7 @@ export default function AboutPageClient({
 
   const values = aboutData?.values ?? [];
   const heroImageUrl = aboutData?.heroImage
-    ? urlFor(aboutData.heroImage).width(1200).quality(80).url()
+    ? urlFor(aboutData.heroImage).width(1200).url()
     : "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&q=80";
 
   return (

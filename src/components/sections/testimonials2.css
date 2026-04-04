@@ -157,7 +157,11 @@
   margin: 0 auto;
   position: relative;
   z-index: 1;
-
+  height: 5.1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .t2-text-enter {
@@ -245,6 +249,7 @@
   padding: 0;
   transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
     filter 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, filter;
 }
 
 .t2-person:not(.t2-person--active) {
@@ -266,18 +271,18 @@
 
 .t2-avatar-outer {
   position: relative;
-  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-    height 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  width: 88px;
+  height: 88px;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
 
 .t2-person .t2-avatar-outer {
-  width: 72px;
-  height: 72px;
+  transform: scale(0.818);
 }
 
 .t2-person--active .t2-avatar-outer {
-  width: 88px;
-  height: 88px;
+  transform: scale(1);
 }
 
 .t2-avatar-circle {
@@ -388,17 +393,17 @@
 /* ── Name ── */
 
 .t2-person-name {
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   font-weight: 600;
   color: var(--text-dim);
-  transition: all 0.4s ease;
+  transition: color 0.4s ease, transform 0.4s ease;
   white-space: nowrap;
 }
 
 .t2-person--active .t2-person-name {
-  font-size: 0.95rem;
   font-weight: 700;
   color: var(--text-heading);
+  transform: scale(1.12);
 }
 
 /* ── Role ── */
@@ -408,15 +413,13 @@
   color: var(--text-dim);
   font-weight: 500;
   white-space: nowrap;
-  transition: all 0.4s ease;
+  transition: opacity 0.4s ease, color 0.4s ease;
   opacity: 0;
-  max-height: 0;
-  overflow: hidden;
+  height: 18px;
 }
 
 .t2-person--active .t2-person-role {
   opacity: 1;
-  max-height: 20px;
   color: var(--text-muted);
 }
 
@@ -430,8 +433,9 @@
 }
 
 @media (max-width: 768px) {
-  .t2-person .t2-avatar-outer { width: 58px; height: 58px; }
-  .t2-person--active .t2-avatar-outer { width: 74px; height: 74px; }
+  .t2-avatar-outer { width: 74px; height: 74px; }
+  .t2-person .t2-avatar-outer { transform: scale(0.784); }
+  .t2-person--active .t2-avatar-outer { transform: scale(1); }
 
   .t2-glass-card {
     padding: 28px 36px;
@@ -441,6 +445,7 @@
   .t2-text {
     font-size: 1.05rem;
     line-height: 1.65;
+    height: 5.0em;
   }
 
   .t2-quote-icon {
@@ -454,8 +459,9 @@
 }
 
 @media (max-width: 640px) {
-  .t2-person .t2-avatar-outer { width: 44px; height: 44px; }
-  .t2-person--active .t2-avatar-outer { width: 56px; height: 56px; }
+  .t2-avatar-outer { width: 56px; height: 56px; }
+  .t2-person .t2-avatar-outer { transform: scale(0.786); }
+  .t2-person--active .t2-avatar-outer { transform: scale(1); }
 
   .t2-avatar-circle { font-size: 12px; }
   .t2-person--active .t2-avatar-circle { font-size: 16px; }
@@ -470,7 +476,7 @@
     border-radius: 16px;
   }
 
-  .t2-text { font-size: 0.95rem; }
+  .t2-text { font-size: 0.95rem; height: 8em; }
 
   .t2-arrow { width: 36px; height: 36px; }
   .t2-arrow--left { left: -44px; }
@@ -479,8 +485,8 @@
 
   .t2-avatars-wrap { margin-top: 28px; }
 
-  .t2-person-name { font-size: 0.68rem; }
-  .t2-person--active .t2-person-name { font-size: 0.78rem; }
+  .t2-person-name { font-size: 0.72rem; }
+  .t2-person--active .t2-person-name { transform: scale(1.1); }
 }
 
 @media (max-width: 480px) {

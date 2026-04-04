@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import AmbientEffects from "@/components/ui/AmbientEffects";
 import { urlFor } from "@/sanity/lib/image";
 import type { SanityImage } from "@/sanity/lib/types";
@@ -116,8 +117,18 @@ export default function ProjectsGallery({ projects }: { projects: ProjectItem[] 
                     ? "pg-panel-slide--active"
                     : ""
                 }`}
-                style={{ backgroundImage: p.image ? `url(${urlFor(p.image).width(800).url()})` : undefined }}
-              />
+              >
+                {p.image && (
+                  <Image
+                    src={urlFor(p.image).width(900).url()}
+                    alt={p.title}
+                    fill
+                    sizes="(max-width: 900px) 100vw, 65vw"
+                    priority={i === 0}
+                    className="pg-panel-slide-img"
+                  />
+                )}
+              </div>
             ))}
             <div className="pg-panel-overlay" />
 

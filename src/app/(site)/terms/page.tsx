@@ -7,8 +7,14 @@ import type { SanityLegalPage } from "@/sanity/lib/types";
 import "../legal.css";
 
 export const metadata: Metadata = {
-  title: "Terms of Service | Eram Soft",
-  description: "Terms and conditions for using Eram Soft services and platforms.",
+  title: "Terms of Service",
+  description: "Terms and conditions for using EramSoft services and platforms.",
+  alternates: { canonical: "https://www.eramsoft.com/terms" },
+  openGraph: {
+    title: "Terms of Service | EramSoft",
+    description: "Terms and conditions for using EramSoft services and platforms.",
+    url: "https://www.eramsoft.com/terms",
+  },
 };
 
 const portableTextComponents = {

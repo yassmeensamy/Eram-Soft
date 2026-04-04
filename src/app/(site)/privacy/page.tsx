@@ -7,8 +7,14 @@ import type { SanityLegalPage } from "@/sanity/lib/types";
 import "../legal.css";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | Eram Soft",
-  description: "How Eram Soft collects, uses, and protects your personal information.",
+  title: "Privacy Policy",
+  description: "How EramSoft collects, uses, and protects your personal information.",
+  alternates: { canonical: "https://www.eramsoft.com/privacy" },
+  openGraph: {
+    title: "Privacy Policy | EramSoft",
+    description: "How EramSoft collects, uses, and protects your personal information.",
+    url: "https://www.eramsoft.com/privacy",
+  },
 };
 
 const portableTextComponents = {

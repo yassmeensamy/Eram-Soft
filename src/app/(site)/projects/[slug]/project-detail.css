@@ -147,8 +147,10 @@
 .pd-hero-img {
   position: absolute;
   inset: 0;
-  background-size: cover;
-  background-position: center;
+}
+
+.pd-hero-img-el {
+  object-fit: cover;
 }
 
 .pd-hero-overlay {

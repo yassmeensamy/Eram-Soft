@@ -23,7 +23,8 @@ export default function MosaicCTA({ projects, prefix }: MosaicCTAProps) {
                 src={p.image ? urlFor(p.image).width(200).url() : "/placeholder.jpg"}
                 alt=""
                 fill
-                sizes="200px"
+                sizes="100px"
+                loading="lazy"
                 className={`${prefix}-bottom-mosaic-img`}
               />
             </div>
@@ -36,7 +37,8 @@ export default function MosaicCTA({ projects, prefix }: MosaicCTAProps) {
                 src={p.image ? urlFor(p.image).width(200).url() : "/placeholder.jpg"}
                 alt=""
                 fill
-                sizes="200px"
+                sizes="100px"
+                loading="lazy"
                 className={`${prefix}-bottom-mosaic-img`}
               />
             </div>
@@ -49,7 +51,8 @@ export default function MosaicCTA({ projects, prefix }: MosaicCTAProps) {
                 src={p.image ? urlFor(p.image).width(200).url() : "/placeholder.jpg"}
                 alt=""
                 fill
-                sizes="200px"
+                sizes="100px"
+                loading="lazy"
                 className={`${prefix}-bottom-mosaic-img`}
               />
             </div>

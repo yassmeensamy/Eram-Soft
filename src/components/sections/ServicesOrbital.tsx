@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import Image from "next/image";
 import "./services-orbital.css";
 import SectionHeader from "@/components/ui/SectionHeader";
 import AmbientEffects from "@/components/ui/AmbientEffects";
@@ -108,15 +109,22 @@ export default function ServicesOrbital({ services }: { services: ServiceItem[] 
 
               return (
                 <div
-                  key={service.number}
+                  key={`${service.number}-${service.title}`}
                   className={`sf-card ${pos} ${isCurrent ? "sf-card--active" : ""}`}
                   style={{ zIndex: isCurrent ? 10 : 5 - Math.abs(diff) }}
                   onClick={() => setActive(i)}
                 >
-                  <div
-                    className="sf-card-bg"
-                    style={{ backgroundImage: service.image ? `url(${urlFor(service.image).width(800).url()})` : undefined }}
-                  />
+                  <div className="sf-card-bg">
+                    {service.image && (
+                      <Image
+                        src={urlFor(service.image).width(600).url()}
+                        alt={service.title}
+                        fill
+                        sizes="300px"
+                        className="sf-card-bg-img"
+                      />
+                    )}
+                  </div>
                   <div className="sf-card-overlay" />
                   <div className="sf-card-glow" />
                   <div className="sf-scanline" />

@@ -304,6 +304,8 @@ body {
 .dark-section {
   position: relative;
   overflow: hidden;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
 }
 
 .neon-tag {
