@@ -31,7 +31,7 @@ const CareersPageClient = dynamic(() => import("./CareersPageClient"));
 export default async function CareersPage() {
   const careersData = await sanityFetch<SanityCareersPage>({
     query: careersPageQuery,
-    tags: ["careers"],
+    tags: ["careersPage"],
   });
 
   return <CareersPageClient careersData={careersData} />;

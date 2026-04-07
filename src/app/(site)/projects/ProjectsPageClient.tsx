@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
@@ -17,6 +17,7 @@ export default function ProjectsPageClient({
   const [activeFilter, setActiveFilter] = useState("All");
   const PAGE_SIZE = 6;
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const lockScrollRef = useRef<number | null>(null);
 
   const categories = useMemo(() => {
     const cats = [...new Set(projects.map((p) => p.category))];
@@ -34,6 +35,17 @@ export default function ProjectsPageClient({
   useEffect(() => {
     setVisibleCount(PAGE_SIZE);
   }, [activeFilter]);
+
+  /* Lock scroll position across Load More renders so the user stays exactly
+     where they were — new rows appear naturally below the current viewport. */
+  useLayoutEffect(() => {
+    if (lockScrollRef.current === null) return;
+    const target = lockScrollRef.current;
+    lockScrollRef.current = null;
+    window.scrollTo({ top: target, behavior: "auto" });
+    // Re-assert after the next frame in case browser scroll anchoring nudged us.
+    requestAnimationFrame(() => window.scrollTo({ top: target, behavior: "auto" }));
+  }, [visibleCount]);
 
   /* Scroll reveal with stagger on filter change */
   useEffect(() => {
@@ -183,7 +195,10 @@ export default function ProjectsPageClient({
         {hasMore && (
           <button
             className="p5-load-more"
-            onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
+            onClick={() => {
+              lockScrollRef.current = window.scrollY;
+              setVisibleCount((c) => c + PAGE_SIZE);
+            }}
           >
             Load More
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">

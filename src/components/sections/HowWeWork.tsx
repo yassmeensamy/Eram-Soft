@@ -141,7 +141,7 @@ export default function HowWeWork({ steps }: { steps: StepItem[] }) {
             const isLit = i <= activeStep;
             return (
               <div
-                key={step.number}
+                key={`step-${step.number}-${i}`}
                 className={`hw-step ${isLit ? "hw-step--reached" : ""} ${hoverStep === i ? "hw-step--hover" : ""}`}
                 onMouseEnter={() => setHoverStep(i)}
                 onMouseLeave={() => setHoverStep(null)}

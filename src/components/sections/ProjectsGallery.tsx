@@ -111,7 +111,7 @@ export default function ProjectsGallery({ projects }: { projects: ProjectItem[] 
           <Link href={`/projects/${current.slug}`} className="pg-panel" style={{ textDecoration: "none" }}>
             {featuredProjects.map((p, i) => (
               <div
-                key={p.slug}
+                key={`slide-${p.slug}-${i}`}
                 className={`pg-panel-slide ${
                   i === active
                     ? "pg-panel-slide--active"
@@ -124,7 +124,7 @@ export default function ProjectsGallery({ projects }: { projects: ProjectItem[] 
                     alt={p.title}
                     fill
                     sizes="(max-width: 900px) 100vw, 65vw"
-                    priority={i === 0}
+                    priority={i < 3}
                     className="pg-panel-slide-img"
                   />
                 )}
@@ -144,8 +144,8 @@ export default function ProjectsGallery({ projects }: { projects: ProjectItem[] 
                 {current.description}
               </p>
               <div className="pg-panel-tags">
-                {current.tech.map((t) => (
-                  <span key={t} className="neon-tag">{t}</span>
+                {current.tech.map((t, ti) => (
+                  <span key={`${t}-${ti}`} className="neon-tag">{t}</span>
                 ))}
               </div>
             </div>
@@ -165,7 +165,7 @@ export default function ProjectsGallery({ projects }: { projects: ProjectItem[] 
             <div ref={tabsContainerRef} className="pg-tabs">
               {featuredProjects.map((project, i) => (
                 <button
-                  key={project.title}
+                  key={`tab-${project.slug}-${i}`}
                   ref={(el) => { tabRefs.current[i] = el; }}
                   className={`pg-tab ${i === active ? "pg-tab--active" : ""}`}
                   onClick={() => goTo(i)}

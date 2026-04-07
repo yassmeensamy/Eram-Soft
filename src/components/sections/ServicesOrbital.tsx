@@ -122,6 +122,7 @@ export default function ServicesOrbital({ services }: { services: ServiceItem[] 
                         fill
                         sizes="300px"
                         className="sf-card-bg-img"
+                        priority={i === 0}
                       />
                     )}
                   </div>
@@ -135,8 +136,8 @@ export default function ServicesOrbital({ services }: { services: ServiceItem[] 
                       <h3 className="sf-card-title">{service.title}</h3>
                       <p className="sf-card-desc">{service.description}</p>
                       <div className="sf-card-tags">
-                        {service.tags.map((tag) => (
-                          <span key={tag} className="neon-tag">
+                        {service.tags.map((tag, ti) => (
+                          <span key={`${tag}-${ti}`} className="neon-tag">
                             {tag}
                           </span>
                         ))}

@@ -1,4 +1,5 @@
 import { defineType, defineField } from "sanity";
+import { uniqueOrderRank } from "../validation/uniqueOrderRank";
 
 export default defineType({
   name: "office",
@@ -12,7 +13,12 @@ export default defineType({
     defineField({ name: "hours", title: "Hours", type: "string" }),
     defineField({ name: "image", title: "Image", type: "image", options: { hotspot: true } }),
     defineField({ name: "mapLink", title: "Google Maps Link", type: "url" }),
-    defineField({ name: "orderRank", title: "Order", type: "number" }),
+    defineField({
+      name: "orderRank",
+      title: "Order",
+      type: "number",
+      validation: (r) => r.required().custom(uniqueOrderRank),
+    }),
   ],
   preview: {
     select: { title: "city", subtitle: "label", media: "image" },

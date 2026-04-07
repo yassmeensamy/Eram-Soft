@@ -341,3 +341,24 @@
     font-size: 1.75rem;
   }
 }
+
+
+/* ── Mobile: wider mask gradient so logos breathe ── */
+@media (max-width: 640px) {
+  .cl-marquee-wrap {
+    mask-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      black 15%,
+      black 85%,
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      black 15%,
+      black 85%,
+      transparent 100%
+    );
+  }
+}

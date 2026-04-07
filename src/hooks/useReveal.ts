@@ -21,14 +21,25 @@ export function useReveal() {
           }
         }
       },
-      { threshold: 0.15 }
+      { threshold: 0.05, rootMargin: "0px 0px -5% 0px" }
     );
 
     requestAnimationFrame(() => {
       targets.forEach((t) => obs.observe(t));
     });
 
-    return () => obs.disconnect();
+    // Safety net: if for any reason the observer hasn't revealed an element
+    // after 1.5s (e.g. element was offscreen due to transform, observer never
+    // fired), force-reveal everything so content is never permanently hidden.
+    const fallback = window.setTimeout(() => {
+      targets.forEach((t) => t.classList.add("is-visible"));
+      obs.disconnect();
+    }, 1500);
+
+    return () => {
+      window.clearTimeout(fallback);
+      obs.disconnect();
+    };
   }, []);
 
   return root;

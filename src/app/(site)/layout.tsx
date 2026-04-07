@@ -8,10 +8,18 @@ import type { SanityFooterConfig, SanitySiteSettings } from "@/sanity/lib/types"
 
 async function SiteFooter() {
   const [footerData, siteSettings] = await Promise.all([
-    sanityFetch<SanityFooterConfig>({ query: footerConfigQuery, tags: ["footer"] }),
+    sanityFetch<SanityFooterConfig>({ query: footerConfigQuery, tags: ["footerConfig"] }),
     sanityFetch<SanitySiteSettings>({ query: siteSettingsQuery, tags: ["siteSettings"] }),
   ]);
   return <Footer data={footerData} socialLinks={siteSettings?.socialLinks} />;
+}
+
+async function SiteFloatingContact() {
+  const siteSettings = await sanityFetch<SanitySiteSettings>({
+    query: siteSettingsQuery,
+    tags: ["siteSettings"],
+  });
+  return <FloatingContact contactEmail={siteSettings?.contactEmail} />;
 }
 
 export default function SiteLayout({
@@ -26,7 +34,9 @@ export default function SiteLayout({
       <Suspense fallback={null}>
         <SiteFooter />
       </Suspense>
-      <FloatingContact />
+      <Suspense fallback={null}>
+        <SiteFloatingContact />
+      </Suspense>
     </>
   );
 }

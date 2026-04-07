@@ -46,7 +46,7 @@ export default async function TermsOfServicePage() {
   const legalPage = await sanityFetch<SanityLegalPage | null>({
     query: legalPageQuery,
     params: { pageType: "terms" },
-    tags: ["legal"],
+    tags: ["legalPage"],
   });
 
   // If Sanity has content, render it with PortableText

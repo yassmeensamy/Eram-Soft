@@ -1,4 +1,5 @@
 import { defineType, defineField } from "sanity";
+import { uniqueOrderRank } from "../validation/uniqueOrderRank";
 
 export default defineType({
   name: "testimonial",
@@ -12,8 +13,12 @@ export default defineType({
     defineField({ name: "comment", title: "Comment", type: "text", rows: 4 }),
     defineField({ name: "avatar", title: "Avatar Initials", type: "string", description: 'e.g. "SM"' }),
     defineField({ name: "color", title: "Color", type: "string" }),
-    defineField({ name: "photo", title: "Photo", type: "image", options: { hotspot: true }, description: "Optional real photo" }),
-    defineField({ name: "orderRank", title: "Order", type: "number" }),
+    defineField({
+      name: "orderRank",
+      title: "Order",
+      type: "number",
+      validation: (r) => r.required().custom(uniqueOrderRank),
+    }),
   ],
   preview: {
     select: { title: "name", subtitle: "company" },

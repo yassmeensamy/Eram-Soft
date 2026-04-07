@@ -56,9 +56,9 @@ export default async function Home() {
       sanityFetch<SanityClientType[]>({ query: clientsQuery, tags: ["client"] }),
       sanityFetch<SanityTestimonial[]>({ query: testimonialsQuery, tags: ["testimonial"] }),
       sanityFetch<SanityOffice[]>({ query: officesQuery, tags: ["office"] }),
-      sanityFetch<SanityFaqItem[]>({ query: faqsQuery, params: { context: "homepage" }, tags: ["faq"] }),
-      sanityFetch<SanityHeroSection>({ query: heroSectionQuery, tags: ["hero"] }),
-      sanityFetch<SanityHowWeWorkStep[]>({ query: howWeWorkStepsQuery, tags: ["howWeWork"] }),
+      sanityFetch<SanityFaqItem[]>({ query: faqsQuery, params: { context: "homepage" }, tags: ["faqItem"] }),
+      sanityFetch<SanityHeroSection>({ query: heroSectionQuery, tags: ["heroSection"] }),
+      sanityFetch<SanityHowWeWorkStep[]>({ query: howWeWorkStepsQuery, tags: ["howWeWorkStep"] }),
     ]);
 
   const jsonLd = {

@@ -207,14 +207,26 @@
 
 /* ── Responsive ── */
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) and (min-width: 641px) {
   .of-grid {
-    grid-template-columns: 1fr;
-    max-width: 420px;
-    margin: 0 auto;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
   }
 
   .of-card {
     height: 340px;
+  }
+}
+
+@media (max-width: 640px) {
+  .of-grid {
+    grid-template-columns: 1fr;
+    max-width: 420px;
+    margin: 0 auto;
+    gap: 18px;
+  }
+
+  .of-card {
+    height: 320px;
   }
 }

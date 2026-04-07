@@ -60,8 +60,8 @@ export default function Clients({ clients }: { clients: ClientItem[] }) {
       <div>
         {isSingle ? (
           <div className="cl-static">
-            {clients.map((client) => (
-              <LogoCard key={client.name} {...client} />
+            {clients.map((client, i) => (
+              <LogoCard key={`cl-${client.name}-${i}`} {...client} />
             ))}
           </div>
         ) : (

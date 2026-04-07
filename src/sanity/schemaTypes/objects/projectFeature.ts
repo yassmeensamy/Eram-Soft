@@ -5,8 +5,8 @@ export default defineType({
   title: "Feature",
   type: "object",
   fields: [
-    defineField({ name: "icon", title: "Icon", type: "string", description: "Icon identifier (e.g. compass, map, bell)" }),
-    defineField({ name: "title", title: "Title", type: "string" }),
-    defineField({ name: "description", title: "Description", type: "text", rows: 2 }),
+    defineField({ name: "icon", title: "Icon", type: "string", description: "Icon identifier (e.g. compass, map, bell)", validation: (r) => r.required() }),
+    defineField({ name: "title", title: "Title", type: "string", validation: (r) => r.required() }),
+    defineField({ name: "description", title: "Description", type: "text", rows: 2, validation: (r) => r.required() }),
   ],
 });

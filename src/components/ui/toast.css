@@ -1,0 +1,103 @@
+.toast-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  pointer-events: none;
+  max-width: calc(100vw - 3rem);
+}
+
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem 0.875rem 0.875rem;
+  min-width: 280px;
+  max-width: 420px;
+  border-radius: 12px;
+  background: rgba(15, 19, 32, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 10px 30px -10px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  color: #e8ecf5;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.toast--success {
+  border-color: rgba(52, 211, 153, 0.35);
+  box-shadow:
+    0 10px 30px -10px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(52, 211, 153, 0.15) inset,
+    0 0 24px -8px rgba(52, 211, 153, 0.4);
+}
+
+.toast--success .toast-icon {
+  color: #34d399;
+}
+
+.toast--error {
+  border-color: rgba(248, 113, 113, 0.4);
+  box-shadow:
+    0 10px 30px -10px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(248, 113, 113, 0.15) inset,
+    0 0 24px -8px rgba(248, 113, 113, 0.4);
+}
+
+.toast--error .toast-icon {
+  color: #f87171;
+}
+
+.toast-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.toast-message {
+  flex: 1;
+  font-weight: 500;
+}
+
+.toast-close {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.toast-close:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+@media (max-width: 640px) {
+  .toast-container {
+    bottom: 1rem;
+    right: 1rem;
+    left: 1rem;
+    max-width: none;
+  }
+
+  .toast {
+    min-width: 0;
+    max-width: none;
+    width: 100%;
+  }
+}

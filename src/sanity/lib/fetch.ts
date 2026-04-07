@@ -3,16 +3,14 @@ import { client } from "./client";
 export async function sanityFetch<T>({
   query,
   params = {},
-  tags = [],
 }: {
   query: string;
   params?: Record<string, unknown>;
+  /** Accepted for backwards compatibility but unused — fetches always hit Sanity fresh. */
   tags?: string[];
 }): Promise<T> {
   return client.fetch<T>(query, params, {
-    next: {
-      revalidate: 3600,
-      tags,
-    },
+    // Always hit Sanity fresh so page refreshes show newly published content.
+    cache: "no-store",
   });
 }

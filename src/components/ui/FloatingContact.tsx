@@ -41,7 +41,12 @@ const itemVariants = {
   },
 };
 
-export default function FloatingContact() {
+interface FloatingContactProps {
+  contactEmail?: string;
+}
+
+export default function FloatingContact({ contactEmail }: FloatingContactProps = {}) {
+  const email = contactEmail || CONTACT.email;
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const fabRef = useRef<HTMLDivElement>(null);
@@ -115,7 +120,7 @@ export default function FloatingContact() {
 
             {/* Email */}
             <motion.a
-              href={`mailto:${CONTACT.email}`}
+              href={`mailto:${email}`}
               className="fc-option fc-option--email"
               role="menuitem"
               variants={itemVariants}
@@ -138,7 +143,7 @@ export default function FloatingContact() {
               </span>
               <span className="fc-option-label">
                 <span className="fc-option-title">Email</span>
-                <span className="fc-option-subtitle">{CONTACT.email}</span>
+                <span className="fc-option-subtitle">{email}</span>
               </span>
             </motion.a>
 

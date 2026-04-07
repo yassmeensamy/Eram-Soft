@@ -1,8 +1,6 @@
 // Objects
 import clientInfo from "./objects/clientInfo";
 import projectFeature from "./objects/projectFeature";
-import processStep from "./objects/processStep";
-import resultMetric from "./objects/resultMetric";
 import projectTestimonial from "./objects/projectTestimonial";
 import stat from "./objects/stat";
 import value from "./objects/value";
@@ -25,13 +23,12 @@ import contactPage from "./documents/contactPage";
 import footerConfig from "./documents/footerConfig";
 import legalPage from "./documents/legalPage";
 import siteSettings from "./documents/siteSettings";
+import contactMessage from "./documents/contactMessage";
 
 export const schemaTypes = [
   // Objects
   clientInfo,
   projectFeature,
-  processStep,
-  resultMetric,
   projectTestimonial,
   stat,
   value,
@@ -53,4 +50,5 @@ export const schemaTypes = [
   footerConfig,
   legalPage,
   siteSettings,
+  contactMessage,
 ];

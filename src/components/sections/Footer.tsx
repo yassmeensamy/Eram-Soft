@@ -68,11 +68,11 @@ export default function Footer({ data, socialLinks }: { data?: SanityFooterConfi
 
           {/* Link columns */}
           <div className="ft-links-grid">
-            {columns.map((col) => (
-              <div key={col.heading} className="ft-links-col">
+            {columns.map((col, ci) => (
+              <div key={`ft-col-${col.heading}-${ci}`} className="ft-links-col">
                 <h4 className="ft-links-heading">{col.heading}</h4>
-                {(col.links ?? []).map((link) => (
-                  <Link key={link.label} href={link.href} className="ft-link">
+                {(col.links ?? []).map((link, li) => (
+                  <Link key={`ft-link-${link.label}-${li}`} href={link.href} className="ft-link">
                     {link.label}
                   </Link>
                 ))}

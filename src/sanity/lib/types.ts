@@ -32,7 +32,6 @@ export interface SanityProjectTestimonial {
 export interface SanityClientInfo {
   name: string;
   industry: string;
-  location: string;
   services: string[];
 }
 
@@ -49,7 +48,6 @@ export interface SanityProjectListItem {
   duration: string;
   teamSize: string;
   status: string;
-  orderRank: number;
 }
 
 export interface SanityProject extends SanityProjectListItem {
@@ -59,9 +57,6 @@ export interface SanityProject extends SanityProjectListItem {
   features: SanityProjectFeature[];
   gallery: SanityImage[];
   testimonial?: SanityProjectTestimonial;
-  appStoreUrl?: string;
-  googlePlayUrl?: string;
-  websiteUrl?: string;
 }
 
 // ── Clients ──
@@ -83,7 +78,6 @@ export interface SanityTestimonial {
   comment: string;
   avatar: string;
   color: string;
-  photo?: SanityImage;
   orderRank: number;
 }
 
@@ -180,9 +174,6 @@ export interface SanityJobPosition {
 }
 
 export interface SanityCareersPage {
-  heroTitle: string;
-  heroAccent: string;
-  heroSubtitle: string;
   perks: SanityPerk[];
   positions: SanityJobPosition[];
 }

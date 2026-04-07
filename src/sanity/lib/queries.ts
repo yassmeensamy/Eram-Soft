@@ -14,7 +14,7 @@ export const servicesQuery = groq`
 
 // ── Projects ──
 export const projectsListQuery = groq`
-  *[_type == "project"] | order(orderRank asc) {
+  *[_type == "project"] | order(_createdAt desc) {
     title,
     "slug": slug.current,
     category,
@@ -26,14 +26,13 @@ export const projectsListQuery = groq`
     platform,
     duration,
     teamSize,
-    status,
-    orderRank
+    status
   }
 `;
 
 // ── Projects (lightweight — for MosaicCTA) ──
 export const projectsMosaicQuery = groq`
-  *[_type == "project"] | order(orderRank asc) {
+  *[_type == "project"] | order(_createdAt desc) {
     title,
     "slug": slug.current,
     image
@@ -59,10 +58,7 @@ export const projectBySlugQuery = groq`
     client,
     features,
     gallery,
-    testimonial,
-    appStoreUrl,
-    googlePlayUrl,
-    websiteUrl
+    testimonial
   }
 `;
 
@@ -88,7 +84,6 @@ export const testimonialsQuery = groq`
     comment,
     avatar,
     color,
-    photo,
     orderRank
   }
 `;
@@ -170,9 +165,6 @@ export const aboutPageQuery = groq`
 // ── Careers Page (singleton) ──
 export const careersPageQuery = groq`
   *[_type == "careersPage"][0] {
-    heroTitle,
-    heroAccent,
-    heroSubtitle,
     perks,
     positions
   }

@@ -21,9 +21,9 @@ interface OfficeItem {
 function OfficesGrid({ offices }: { offices: OfficeItem[] }) {
   return (
     <div className="of-grid">
-      {offices.map((b) => (
+      {offices.map((b, i) => (
         <a
-          key={b.city}
+          key={`of-${b.city}-${i}`}
           href={b.mapLink}
           target="_blank"
           rel="noopener noreferrer"
