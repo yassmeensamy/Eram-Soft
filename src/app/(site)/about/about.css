@@ -1340,7 +1340,14 @@
 
   .ab-hero-frame-wrap {
     max-width: 600px;
+    width: 100%;
     margin: 0 auto;
+  }
+
+  .ab-hero-frame {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    min-height: 320px;
   }
 
   .ab-hero-accent-line {
@@ -1475,7 +1482,16 @@
     font-size: 0.95rem;
   }
 
+  .ab-hero-frame-wrap {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
   .ab-hero-frame {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    min-height: 240px;
     border-radius: 16px;
   }
 

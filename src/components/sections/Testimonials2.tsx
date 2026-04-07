@@ -118,7 +118,7 @@ export default function Testimonials2({ testimonials }: { testimonials: Testimon
             <div className="t2-avatars">
               {testimonials.map((t, i) => (
                 <button
-                  key={t.name}
+                  key={`t2-${t.name}-${i}`}
                   className={`t2-person ${i === active ? "t2-person--active" : ""}`}
                   onClick={() => goTo(i)}
                   aria-label={`View testimonial from ${t.name}`}

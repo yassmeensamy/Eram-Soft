@@ -779,3 +779,21 @@
   z-index: 6;
   pointer-events: none;
 }
+
+
+/* ══════════════════════════════════════════════════
+   RESPONSIVE — Tablet & Mobile
+   ══════════════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+  .h2-glow--cyan { width: 420px; height: 420px; }
+  .h2-glow--blue { width: 300px; height: 300px; }
+  .h2-glow--white { width: 460px; height: 320px; }
+}
+
+@media (max-width: 640px) {
+  .h2-glow--cyan { width: 280px; height: 280px; }
+  .h2-glow--blue { width: 220px; height: 220px; }
+  .h2-glow--white { width: 300px; height: 220px; top: 35%; }
+  .h2-streak { display: none; }
+}

@@ -1,6 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { sanityFetch } from "@/sanity/lib/fetch";
+import { siteSettingsQuery } from "@/sanity/lib/queries";
+import type { SanitySiteSettings } from "@/sanity/lib/types";
 import "./globals.css";
+
+const FALLBACK_SITE_NAME = "EramSoft — Software Development & Digital Solutions";
+const FALLBACK_SITE_DESCRIPTION =
+  "EramSoft delivers end-to-end software development, mobile apps, web platforms, and digital transformation solutions. Based in the UAE with global reach.";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,14 +27,21 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export const metadata: Metadata = {
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await sanityFetch<SanitySiteSettings | null>({
+    query: siteSettingsQuery,
+    tags: ["siteSettings"],
+  });
+  const siteName = settings?.siteName || FALLBACK_SITE_NAME;
+  const siteDescription = settings?.siteDescription || FALLBACK_SITE_DESCRIPTION;
+
+  return {
   metadataBase: new URL("https://www.eramsoft.com"),
   title: {
-    default: "EramSoft — Software Development & Digital Solutions",
+    default: siteName,
     template: "%s | EramSoft",
   },
-  description:
-    "EramSoft delivers end-to-end software development, mobile apps, web platforms, and digital transformation solutions. Based in the UAE with global reach.",
+  description: siteDescription,
   keywords: [
     "software development",
     "mobile app development",
@@ -57,15 +71,13 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://www.eramsoft.com",
     siteName: "EramSoft",
-    title: "EramSoft — Software Development & Digital Solutions",
-    description:
-      "End-to-end software development, mobile apps, web platforms, and digital transformation solutions.",
+    title: siteName,
+    description: siteDescription,
   },
   twitter: {
     card: "summary_large_image",
-    title: "EramSoft — Software Development & Digital Solutions",
-    description:
-      "End-to-end software development, mobile apps, web platforms, and digital transformation solutions.",
+    title: siteName,
+    description: siteDescription,
   },
   icons: {
     icon: "/favicon.svg",
@@ -75,7 +87,8 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://www.eramsoft.com",
   },
-};
+  };
+}
 
 export default function RootLayout({
   children,

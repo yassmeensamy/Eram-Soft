@@ -278,6 +278,9 @@
   display: flex;
   flex-direction: column;
   gap: 28px;
+  /* Disable browser scroll anchoring so loading more rows doesn't push the
+     viewport down past the new content. New rows appear right below the fold. */
+  overflow-anchor: none;
 }
 
 /* ── Row ── */

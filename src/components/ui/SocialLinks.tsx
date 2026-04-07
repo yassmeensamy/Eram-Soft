@@ -45,12 +45,12 @@ export default function SocialLinks({
 
   return (
     <>
-      {links.map((s) => {
+      {links.map((s, i) => {
         const path = socialIcons[s.platform];
         if (!path) return null;
         return (
           <a
-            key={s.platform}
+            key={`sl-${s.platform}-${i}`}
             href={s.url}
             target="_blank"
             rel="noopener noreferrer"

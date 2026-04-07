@@ -22,16 +22,17 @@ export const metadata: Metadata = {
     images: [defaultOgImage.url],
   },
 };
-import { contactPageQuery, officesQuery, faqsQuery } from "@/sanity/lib/queries";
-import type { SanityContactPage, SanityOffice, SanityFaqItem } from "@/sanity/lib/types";
+import { contactPageQuery, officesQuery, faqsQuery, siteSettingsQuery } from "@/sanity/lib/queries";
+import type { SanityContactPage, SanityOffice, SanityFaqItem, SanitySiteSettings } from "@/sanity/lib/types";
 import ContactPageClient from "./ContactPageClient";
 
 export default async function ContactPage() {
-  const [contactData, offices, faqs] = await Promise.all([
-    sanityFetch<SanityContactPage>({ query: contactPageQuery, tags: ["contact"] }),
+  const [contactData, offices, faqs, siteSettings] = await Promise.all([
+    sanityFetch<SanityContactPage>({ query: contactPageQuery, tags: ["contactPage"] }),
     sanityFetch<SanityOffice[]>({ query: officesQuery, tags: ["office"] }),
-    sanityFetch<SanityFaqItem[]>({ query: faqsQuery, params: { context: "contact" }, tags: ["faq"] }),
+    sanityFetch<SanityFaqItem[]>({ query: faqsQuery, params: { context: "contact" }, tags: ["faqItem"] }),
+    sanityFetch<SanitySiteSettings>({ query: siteSettingsQuery, tags: ["siteSettings"] }),
   ]);
 
-  return <ContactPageClient contactData={contactData} offices={offices} faqs={faqs} />;
+  return <ContactPageClient contactData={contactData} offices={offices} faqs={faqs} siteSettings={siteSettings} />;
 }

@@ -46,7 +46,7 @@ export default async function PrivacyPolicyPage() {
   const legalPage = await sanityFetch<SanityLegalPage | null>({
     query: legalPageQuery,
     params: { pageType: "privacy" },
-    tags: ["legal"],
+    tags: ["legalPage"],
   });
 
   // If Sanity has content, render it with PortableText

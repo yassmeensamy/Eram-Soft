@@ -83,14 +83,14 @@ export default function Hero2({ data }: { data?: HeroData }) {
       <div className="h2-top-fade" />
 
       {/* ── Main content area — split layout ── */}
-      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 items-center px-8 pt-28 pb-8 lg:px-16">
+      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 items-center px-5 pt-24 pb-8 sm:px-8 sm:pt-28 lg:px-16">
         {/* Left — Text content */}
         <div className="relative z-10 w-full max-w-xl">
           <p className="h2-subtitle mb-5 text-sm font-semibold tracking-[0.3em] uppercase h2-subtitleIn [animation-delay:0.1s]">
             Engineering Excellence
           </p>
 
-          <h1 className="h2-heading mb-6 text-5xl font-bold leading-[1.08] md:text-6xl lg:text-[4.5rem] h2-clipReveal [animation-delay:0.2s]">
+          <h1 className="h2-heading mb-6 text-[2.4rem] font-bold leading-[1.08] sm:text-5xl md:text-6xl lg:text-[4.5rem] h2-clipReveal [animation-delay:0.2s]">
             EramSoft Build<br />
             <span className={`h2-shimmer h2-word ${fade ? "h2-word--out" : ""}`}>
               {words[index]}
@@ -102,10 +102,10 @@ export default function Hero2({ data }: { data?: HeroData }) {
             {data?.bodyText ?? "Custom web apps, mobile platforms, and cloud infrastructure — architected for performance and built to grow with your business."}
           </p>
 
-          <div className="flex items-center gap-4 h2-btnIn [animation-delay:0.45s]">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4 h2-btnIn [animation-delay:0.45s]">
             <Link
               href={data?.ctaPrimaryLink ?? "/contact"}
-              className="h2-cta-primary inline-flex items-center gap-2.5 rounded-full bg-gradient-to-r from-[#50aaff] to-[#3b8de8] px-8 py-3.5 text-sm font-bold tracking-wide text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5"
+              className="h2-cta-primary inline-flex items-center gap-2.5 rounded-full bg-gradient-to-r from-[#50aaff] to-[#3b8de8] px-6 py-3 sm:px-8 sm:py-3.5 text-sm font-bold tracking-wide text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M22 2L11 13" />
@@ -116,7 +116,7 @@ export default function Hero2({ data }: { data?: HeroData }) {
 
             <Link
               href={data?.ctaSecondaryLink ?? "/projects"}
-              className="h2-cta-secondary rounded-full border-2 px-8 py-3.5 text-sm font-bold tracking-wide backdrop-blur-sm transition-all duration-300"
+              className="h2-cta-secondary rounded-full border-2 px-6 py-3 sm:px-8 sm:py-3.5 text-sm font-bold tracking-wide backdrop-blur-sm transition-all duration-300"
             >
               {data?.ctaSecondaryText ?? "OUR WORK"}
             </Link>

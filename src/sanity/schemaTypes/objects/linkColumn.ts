@@ -5,7 +5,7 @@ export default defineType({
   title: "Link Column",
   type: "object",
   fields: [
-    defineField({ name: "heading", title: "Heading", type: "string" }),
+    defineField({ name: "heading", title: "Heading", type: "string", validation: (r) => r.required() }),
     defineField({
       name: "links",
       title: "Links",
@@ -14,8 +14,8 @@ export default defineType({
         {
           type: "object",
           fields: [
-            defineField({ name: "label", title: "Label", type: "string" }),
-            defineField({ name: "href", title: "URL", type: "string" }),
+            defineField({ name: "label", title: "Label", type: "string", validation: (r) => r.required() }),
+            defineField({ name: "href", title: "URL", type: "string", validation: (r) => r.required() }),
           ],
         },
       ],

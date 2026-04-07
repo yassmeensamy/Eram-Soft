@@ -16,7 +16,6 @@ export default defineType({
     defineField({ name: "visionText", title: "Vision Text", type: "text", rows: 4 }),
     defineField({ name: "missionTitle", title: "Mission Title", type: "string" }),
     defineField({ name: "missionText", title: "Mission Text", type: "text", rows: 4 }),
-    defineField({ name: "teamImage", title: "Team Image", type: "image", options: { hotspot: true } }),
     defineField({ name: "foundedYear", title: "Founded Year", type: "string" }),
     defineField({ name: "clientRetention", title: "Client Retention", type: "string" }),
     defineField({ name: "portfolioTag", title: "Portfolio Tag", type: "string" }),

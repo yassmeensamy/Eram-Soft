@@ -1,25 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import clsx from "clsx";
-import { User, Mail, Phone, Layers, MessageSquare, ChevronDown, ArrowRight } from "lucide-react";
+import { User, Mail, Phone, Layers, MessageSquare, ChevronDown, ArrowRight, Loader2 } from "lucide-react";
 import { OfficesGrid } from "@/components/sections/Offices";
 import { useReveal } from "@/hooks/useReveal";
 import FaqAccordion from "@/components/ui/FaqAccordion";
 import PageAmbient from "@/components/ui/PageAmbient";
+import { ToastContainer, type ToastData } from "@/components/ui/Toast";
 import { CONTACT } from "@/lib/constants";
-import type { SanityContactPage, SanityOffice, SanityFaqItem } from "@/sanity/lib/types";
+import type { SanityContactPage, SanityOffice, SanityFaqItem, SanitySiteSettings } from "@/sanity/lib/types";
 import "./contact.css";
 
 export default function ContactPageClient({
   contactData,
   offices,
   faqs,
+  siteSettings,
 }: {
   contactData: SanityContactPage;
   offices: SanityOffice[];
   faqs: SanityFaqItem[];
+  siteSettings?: SanitySiteSettings | null;
 }) {
+  const email = siteSettings?.contactEmail || CONTACT.email;
+  const phone = siteSettings?.contactPhone || `+${CONTACT.phone}`;
   const pageRef = useReveal();
 
   const serviceOptions = contactData?.serviceOptions ?? [
@@ -44,7 +49,16 @@ export default function ContactPageClient({
     message: "",
   });
   const [focused, setFocused] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [toasts, setToasts] = useState<ToastData[]>([]);
 
+  const dismissToast = useCallback((id: number) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  }, []);
+
+  const pushToast = useCallback((variant: "success" | "error", message: string) => {
+    setToasts((prev) => [...prev, { id: Date.now() + Math.random(), variant, message }]);
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -52,10 +66,28 @@ export default function ContactPageClient({
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: integrate with backend / email service
-    console.log("Form submitted:", form);
+    if (submitting) return;
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data: { ok?: boolean; error?: string } = await res.json().catch(() => ({}));
+      if (!res.ok || !data.ok) {
+        pushToast("error", data.error || "Something went wrong. Please try again.");
+        return;
+      }
+      pushToast("success", "Message sent! We'll get back to you within 24 hours.");
+      setForm({ name: "", email: "", phone: "", service: "", message: "" });
+    } catch {
+      pushToast("error", "Network error. Please check your connection and try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -94,11 +126,11 @@ export default function ContactPageClient({
             </div>
 
             <div className="ct-hero-icons">
-              <a href={`mailto:${CONTACT.email}`} className="ct-icon-btn" aria-label="Email us">
+              <a href={`mailto:${email}`} className="ct-icon-btn" aria-label="Email us">
                 <Mail size={22} strokeWidth={1.5} />
                 <span className="ct-icon-label">Email</span>
               </a>
-              <a href={`tel:+${CONTACT.phone}`} className="ct-icon-btn" aria-label="Call us">
+              <a href={`tel:${phone}`} className="ct-icon-btn" aria-label="Call us">
                 <Phone size={22} strokeWidth={1.5} />
                 <span className="ct-icon-label">Phone</span>
               </a>
@@ -179,11 +211,20 @@ export default function ContactPageClient({
               </div>
 
               {/* Submit */}
-              <button type="submit" className="ct-submit">
+              <button type="submit" className="ct-submit" disabled={submitting} aria-busy={submitting}>
                 <span className="ct-submit-shimmer" aria-hidden="true" />
                 <span className="ct-submit-text">
-                  Send Message
-                  <ArrowRight size={16} strokeWidth={2.5} />
+                  {submitting ? (
+                    <>
+                      Sending…
+                      <Loader2 size={16} strokeWidth={2.5} className="ct-submit-spinner" />
+                    </>
+                  ) : (
+                    <>
+                      Send Message
+                      <ArrowRight size={16} strokeWidth={2.5} />
+                    </>
+                  )}
                 </span>
               </button>
             </form>
@@ -228,6 +269,7 @@ export default function ContactPageClient({
 
 
       </div>
+      <ToastContainer toasts={toasts} onDismiss={dismissToast} />
     </div>
   );
 }

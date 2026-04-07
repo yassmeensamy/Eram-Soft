@@ -6,10 +6,26 @@ export default defineType({
   type: "document",
   fields: [
     defineField({ name: "title", title: "Title", type: "string", validation: (r) => r.required() }),
-    defineField({ name: "slug", title: "Slug", type: "slug", options: { source: "title", maxLength: 96 }, validation: (r) => r.required() }),
+    defineField({
+      name: "slug",
+      title: "Slug",
+      type: "slug",
+      options: { source: "title", maxLength: 96 },
+      readOnly: ({ value }) => !!value?.current,
+      validation: (r) => r.required(),
+    }),
     defineField({ name: "category", title: "Category", type: "string" }),
     defineField({ name: "description", title: "Description", type: "text", rows: 3 }),
-    defineField({ name: "tech", title: "Tech Stack", type: "array", of: [{ type: "string" }] }),
+    defineField({
+      name: "tech",
+      title: "Tech Stack",
+      type: "array",
+      of: [{ type: "string" }],
+      validation: (r) =>
+        r.custom((items?: string[]) =>
+          items && items.some((i) => !i || !i.trim()) ? "Tech entries cannot be empty" : true
+        ),
+    }),
     defineField({ name: "image", title: "Hero Image", type: "image", options: { hotspot: true } }),
     defineField({ name: "year", title: "Year", type: "string" }),
     defineField({ name: "tagline", title: "Tagline", type: "string" }),
@@ -22,13 +38,7 @@ export default defineType({
     defineField({ name: "client", title: "Client Info", type: "clientInfo" }),
     defineField({ name: "features", title: "Features", type: "array", of: [{ type: "projectFeature" }] }),
     defineField({ name: "gallery", title: "Gallery", type: "array", of: [{ type: "image", options: { hotspot: true } }] }),
-    defineField({ name: "process", title: "Process Steps", type: "array", of: [{ type: "processStep" }] }),
-    defineField({ name: "results", title: "Results", type: "array", of: [{ type: "resultMetric" }] }),
     defineField({ name: "testimonial", title: "Testimonial", type: "projectTestimonial" }),
-    defineField({ name: "appStoreUrl", title: "App Store URL", type: "url" }),
-    defineField({ name: "googlePlayUrl", title: "Google Play URL", type: "url" }),
-    defineField({ name: "websiteUrl", title: "Website URL", type: "url" }),
-    defineField({ name: "orderRank", title: "Order", type: "number" }),
   ],
   preview: {
     select: { title: "title", subtitle: "category", media: "image" },

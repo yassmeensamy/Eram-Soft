@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 
 export default async function AboutPage() {
   const [aboutData, offices] = await Promise.all([
-    sanityFetch<SanityAboutPage>({ query: aboutPageQuery, tags: ["about"] }),
+    sanityFetch<SanityAboutPage>({ query: aboutPageQuery, tags: ["aboutPage"] }),
     sanityFetch<SanityOffice[]>({ query: officesQuery, tags: ["office"] }),
   ]);
 

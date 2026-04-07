@@ -1022,3 +1022,16 @@
   }
 }
 
+
+.ct-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.ct-submit-spinner {
+  animation: ct-spin 0.9s linear infinite;
+}
+
+@keyframes ct-spin {
+  to { transform: rotate(360deg); }
+}

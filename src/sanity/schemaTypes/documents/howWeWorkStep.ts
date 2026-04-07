@@ -1,4 +1,5 @@
 import { defineType, defineField } from "sanity";
+import { uniqueOrderRank } from "../validation/uniqueOrderRank";
 
 export default defineType({
   name: "howWeWorkStep",
@@ -14,7 +15,12 @@ export default defineType({
       type: "string",
       description: 'Maps to SVG icon in code (e.g. "discovery", "design", "development", "testing", "launch")',
     }),
-    defineField({ name: "orderRank", title: "Order", type: "number" }),
+    defineField({
+      name: "orderRank",
+      title: "Order",
+      type: "number",
+      validation: (r) => r.required().custom(uniqueOrderRank),
+    }),
   ],
   preview: {
     select: { title: "title", subtitle: "number" },
