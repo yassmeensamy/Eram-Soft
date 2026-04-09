@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/nextjs';
 
-const isLocalEnv = process.env.NODE_ENV === 'development' || process.env.VERCEL_ENV === undefined;
+const isLocalEnv = process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_VERCEL_ENV === undefined;
 
 if (!isLocalEnv) {
   Sentry.init({
