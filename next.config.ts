@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from '@sentry/nextjs';
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
@@ -20,4 +21,15 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  org: 'eramgroup-wn',
+  project: 'eramsoft-website',
+  silent: !process.env.SENTRY_AUTH_TOKEN,
+  telemetry: false,
+  widenClientFileUpload: true,
+  tunnelRoute: '/monitoring',
+  webpack: {
+    treeshake: { removeDebugLogging: true },
+    automaticVercelMonitors: true,
+  },
+});
